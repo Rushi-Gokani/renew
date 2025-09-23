@@ -63,6 +63,7 @@
   <div
     class="collection-wrapper grid gap-style"
   >
+    <div class="cb-layout">
     <aside class="cb-filters facets--vertical" role="complementary">
       <h3 class="cb-filters__heading">By Health Goal</h3>
       {% for filter in selected_collection.filters %}
@@ -105,6 +106,7 @@
         {% endif %}
       {% endfor %}
     </aside>
+    <div class="cb-content">
 
     {% paginate selected_collection.products by section.settings.per_page %}
       <div class="cb-results-row">
@@ -157,6 +159,8 @@
         </nav>
       {% endif %}
     {% endpaginate %}
+    </div>
+    </div>
   </div>
 </results-list>
 
@@ -247,25 +251,22 @@
     height: 20px;
   }
 
+  /* Overall two-column layout */
+  .cb-layout { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: start; }
+  @media screen and (min-width: 990px) { .cb-layout { grid-template-columns: 280px 1fr; } }
+
   .cb-results-row {
-    grid-column: var(--grid-column--mobile);
     display: flex;
     align-items: baseline;
     justify-content: flex-start;
     gap: 12px;
     margin: 0 0 12px 0;
   }
-  @media screen and (min-width: 750px) {
-    .cb-results-row {
-      grid-column: var(--grid-column--desktop);
-    }
-  }
   .cb-results-count { color: var(--color-foreground-secondary); font-size: .95rem; }
   .cb-reset { color: var(--color-foreground); text-decoration: underline; }
 
   /* Filters */
-  .cb-filters { grid-column: var(--grid-column--mobile); }
-  @media screen and (min-width: 750px) { .cb-filters { grid-column: var(--grid-column--desktop-start) / span 2; } }
+  .cb-filters { position: sticky; top: 24px; align-self: start; }
   .cb-filters__heading { font-weight: 600; margin: 0 0 8px; }
   .cb-filter-group { margin: 8px 0 20px; }
   .cb-filter-group__title { color: var(--color-foreground-secondary); margin-bottom: 10px; font-size: .95rem; }
@@ -275,12 +276,13 @@
   .cb-checkbox { width: 18px; height: 18px; border: 1px solid var(--cb-chip-border); border-radius: 4px; background: #fff; box-shadow: inset 0 0 0 2px #fff; }
 
   /* Grid */
-  .cb-grid { list-style: none; padding: 0; margin: 0; grid-column: var(--grid-column--mobile); display: grid; gap: 20px; }
-  @media screen and (min-width: 750px) { .cb-grid { grid-column: var(--grid-column--desktop); grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .cb-grid { list-style: none; padding: 0; margin: 0; display: grid; gap: 20px; }
+  @media screen and (min-width: 750px) { .cb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media screen and (min-width: 990px) { .cb-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .cb-card { display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #e6e6e6; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
-  .cb-card__media { display: block; background: #fafafa; }
-  .cb-card__img { width: 100%; height: auto; display: block; }
-  .cb-card__placeholder { aspect-ratio: 4/5; background: #f4f4f4; }
+  .cb-card__media { display: block; background: #fafafa; aspect-ratio: 4 / 3; }
+  .cb-card__img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .cb-card__placeholder { aspect-ratio: 4/3; background: #f4f4f4; }
   .cb-card__content { padding: 16px; display: grid; gap: 10px; }
   .cb-card__title { font-size: 1.35rem; margin: 0; }
   .cb-card__excerpt { color: var(--color-foreground-secondary); font-size: .95rem; }
