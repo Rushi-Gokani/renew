@@ -106,14 +106,13 @@
       {% endfor %}
     </aside>
 
-    <div class="cb-results-row">
-      <div class="cb-results-count">
-        {{ 'Showing ' }}{{ selected_collection.products_count }}{{ ' results' }}
-      </div>
-      <a class="cb-reset" href="{{ selected_collection.url }}">{{ 'Reset all filters' }}</a>
-    </div>
-
     {% paginate selected_collection.products by section.settings.per_page %}
+      <div class="cb-results-row">
+        <div class="cb-results-count">
+          {{ 'Showing ' }}{{ paginate.items }}{{ ' results' }}
+        </div>
+        <a class="cb-reset" href="{{ selected_collection.url }}">{{ 'Reset all filters' }}</a>
+      </div>
       <ul id="ResultsList" class="cb-grid" role="list">
         {% for product in selected_collection.products %}
           <li class="cb-card" id="{{ section.id }}-{{ product.id }}" data-page="{{ paginate.current_page }}">
@@ -244,8 +243,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
   }
 
   .cb-results-row {
