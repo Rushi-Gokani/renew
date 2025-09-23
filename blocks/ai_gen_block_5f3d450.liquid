@@ -14,6 +14,7 @@
     width: 100%;
     box-sizing: border-box;
     max-width: 100%;
+    contain: layout style paint;
   }
 
   .ai-testimonial-container-{{ ai_gen_id }} {
@@ -64,12 +65,19 @@
     display: flex;
     gap: 20px;
     transition: transform 0.6s cubic-bezier(.2,.9,.2,1);
-    padding: 0 50px;
+    padding: 0;
     will-change: transform;
     width: 100%;
     box-sizing: border-box;
     max-width: 100%;
     overflow: visible;
+    margin: 0;
+  }
+
+  @media (min-width: 769px) {
+    .ai-testimonial-carousel-track-{{ ai_gen_id }} {
+      padding: 0 50px;
+    }
   }
 
   .ai-testimonial-card-{{ ai_gen_id }} {
@@ -250,30 +258,33 @@
     }
 
     .ai-testimonial-carousel-{{ ai_gen_id }} {
-      padding: 40px 10px;
+      padding: 40px 6px;
       overflow-x: hidden;
       overflow-y: visible;
       box-sizing: border-box;
+      max-width: 100%;
     }
 
     .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
       overflow-x: hidden;
       overflow-y: visible;
+      max-width: 100%;
     }
 
     .ai-testimonial-carousel-track-{{ ai_gen_id }} {
       padding: 0;
-      gap: 12px;
+      gap: 8px;
       margin: 0;
       width: 100%;
+      max-width: 100%;
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 20px);
-      max-width: calc(100vw - 20px);
-      min-width: 260px;
-      padding: 18px;
-      min-height: 130px;
+      flex: 0 0 calc(100vw - 12px);
+      max-width: calc(100vw - 12px);
+      min-width: 220px;
+      padding: 14px;
+      min-height: 110px;
       box-sizing: border-box;
     }
 
@@ -318,40 +329,43 @@
 
   @media (min-width: 481px) and (max-width: 768px) {
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(50vw - 25px);
-      min-width: 280px;
-      max-width: 400px;
-      min-height: 160px;
+      flex: 0 0 calc(50vw - 20px);
+      min-width: 240px;
+      max-width: calc(50vw - 20px);
+      min-height: 140px;
     }
   }
 
 
   @media (max-width: 480px) {
     .ai-testimonial-carousel-{{ ai_gen_id }} {
-      padding: 30px 8px;
+      padding: 30px 4px;
       overflow-x: hidden;
       overflow-y: visible;
       box-sizing: border-box;
+      max-width: 100%;
     }
 
     .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
       overflow-x: hidden;
       overflow-y: visible;
+      max-width: 100%;
     }
 
     .ai-testimonial-carousel-track-{{ ai_gen_id }} {
       padding: 0;
-      gap: 10px;
+      gap: 6px;
       margin: 0;
       width: 100%;
+      max-width: 100%;
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 16px);
-      max-width: calc(100vw - 16px);
-      min-width: 240px;
-      padding: 16px;
-      min-height: 120px;
+      flex: 0 0 calc(100vw - 8px);
+      max-width: calc(100vw - 8px);
+      min-width: 200px;
+      padding: 12px;
+      min-height: 100px;
       box-sizing: border-box;
     }
 
@@ -380,30 +394,33 @@
 
   @media (max-width: 375px) {
     .ai-testimonial-carousel-{{ ai_gen_id }} {
-      padding: 25px 6px;
+      padding: 25px 2px;
       overflow-x: hidden;
       overflow-y: visible;
       box-sizing: border-box;
+      max-width: 100%;
     }
 
     .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
       overflow-x: hidden;
       overflow-y: visible;
+      max-width: 100%;
     }
 
     .ai-testimonial-carousel-track-{{ ai_gen_id }} {
       padding: 0;
-      gap: 8px;
+      gap: 4px;
       margin: 0;
       width: 100%;
+      max-width: 100%;
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 12px);
-      max-width: calc(100vw - 12px);
-      min-width: 220px;
-      padding: 14px;
-      min-height: 110px;
+      flex: 0 0 calc(100vw - 4px);
+      max-width: calc(100vw - 4px);
+      min-width: 180px;
+      padding: 10px;
+      min-height: 90px;
       box-sizing: border-box;
     }
 
@@ -427,6 +444,57 @@
     .ai-testimonial-verified-{{ ai_gen_id }} {
       font-size: 9px;
       padding: 2px 4px;
+    }
+  }
+
+  /* ABSOLUTE OVERFLOW PREVENTION - FINAL SAFETY NET */
+  .ai-testimonial-carousel-{{ ai_gen_id }} * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .ai-testimonial-carousel-{{ ai_gen_id }} .ai-testimonial-carousel-track-{{ ai_gen_id }} {
+    max-width: calc(100vw - 4px) !important;
+  }
+
+  @media (max-width: 768px) {
+    .ai-testimonial-carousel-{{ ai_gen_id }} .ai-testimonial-carousel-track-{{ ai_gen_id }} {
+      max-width: calc(100vw - 8px) !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .ai-testimonial-carousel-{{ ai_gen_id }} .ai-testimonial-carousel-track-{{ ai_gen_id }} {
+      max-width: calc(100vw - 6px) !important;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .ai-testimonial-carousel-{{ ai_gen_id }} .ai-testimonial-carousel-track-{{ ai_gen_id }} {
+      max-width: calc(100vw - 4px) !important;
+    }
+  }
+
+  /* ULTIMATE OVERFLOW PREVENTION - NO ELEMENT CAN CAUSE HORIZONTAL SCROLL */
+  .ai-testimonial-carousel-{{ ai_gen_id }} {
+    position: relative;
+  }
+
+  .ai-testimonial-carousel-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: transparent;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .ai-testimonial-carousel-{{ ai_gen_id }} {
+      contain: layout style;
     }
   }
 {% endstyle %}
@@ -721,19 +789,23 @@
         // ensure currentIndex is in range (it should be because syncCurrentIndexToHighlight clamps)
         this.currentIndex = Math.max(0, Math.min(this.currentIndex, this.maxIndex));
 
-        // For mobile, use simpler translation to prevent overflow
+        // For mobile, use ultra-conservative translation to absolutely prevent overflow
         if (window.innerWidth <= 768) {
-          // Calculate safe translate position - ensure we never go beyond bounds
+          // Calculate safe translate position with extra safety margin
           const translateX = this.highlightIndex * cardWidthWithGap;
 
-          // Calculate the maximum safe translation (ensure last card is visible)
+          // Calculate the maximum safe translation with conservative safety margin
           const minTranslate = 0;
-          const maxTranslate = Math.max(0, trackWidth - wrapperWidth);
+          const safetyMargin = 10; // Extra pixels of safety
+          const maxTranslate = Math.max(0, trackWidth - wrapperWidth - safetyMargin);
 
-          // Clamp the translation to safe bounds
+          // Clamp the translation to ultra-safe bounds
           const safeTranslate = Math.max(minTranslate, Math.min(translateX, maxTranslate));
 
-          this.track.style.transform = `translateX(${-safeTranslate}px)`;
+          // Double-check: never allow negative translation on mobile
+          const finalSafeTranslate = Math.max(0, safeTranslate);
+
+          this.track.style.transform = `translateX(${-finalSafeTranslate}px)`;
         } else {
           // Desktop: center the highlighted card
           const centerOfCard = (this.highlightIndex * cardWidthWithGap) + (cardWidth / 2);
