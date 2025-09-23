@@ -90,8 +90,8 @@
     "mobile_customization": "Mobile customization",
     "mobile_media_type": "Mobile media type",
     "mobile_image": "Mobile image",
-    "mobile_image_position": "Mobile image position",
-    "mobile_image_fit": "Mobile image fit",
+    "mobile_image_position": "Mobile Image Position",
+    "mobile_image_fit": "Mobile Image Fit",
     "mobile_fullscreen": "Mobile fullscreen image",
     // Section header for navigation menu settings in theme editor
     "menu": "Menu",
