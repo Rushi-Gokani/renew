@@ -173,18 +173,24 @@
   }
 
   @media screen and (max-width: 768px) {
-      .ai-social-video-social-icons-{{ ai_gen_id }} {
-justify-content: center;
-  }
+    .ai-social-video-social-icons-{{ ai_gen_id }} {
+      justify-content: center;
+    }
 
     .ai-social-video-section-{{ ai_gen_id }} {
       padding: 40px 20px;
+      overflow-x: hidden;
     }
 
     .ai-social-video-container-{{ ai_gen_id }} {
       grid-template-columns: 1fr;
       gap: 40px;
       text-align: center;
+    }
+
+    .ai-social-video-left-{{ ai_gen_id }} {
+      overflow: hidden;
+      padding: 0 40px;
     }
 
     .ai-social-video-phone-mockup-{{ ai_gen_id }} {
@@ -203,19 +209,19 @@ justify-content: center;
     .ai-social-video-review-bubble-{{ ai_gen_id }} {
       font-size: 12px;
       padding: 10px 14px;
-      max-width: 160px;
+      max-width: 140px;
     }
 
     .ai-social-video-review-bubble-{{ ai_gen_id }}:nth-child(1) {
-      right: -10px;
+      right: -5px;
     }
 
     .ai-social-video-review-bubble-{{ ai_gen_id }}:nth-child(2) {
-      left: -20px;
+      left: -5px;
     }
 
     .ai-social-video-review-bubble-{{ ai_gen_id }}:nth-child(3) {
-      right: -5px;
+      right: 0;
     }
   }
 {% endstyle %}<div class="ai-social-video-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
