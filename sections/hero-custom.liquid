@@ -188,6 +188,7 @@
   /* Desktop content positioning */
   @media (min-width: 768px) {
     .hero-custom__content {
+      margin-right:120px
       position: var(--content-position-desktop, static);
       transform: translate(
         {% case content_position_desktop %}
@@ -209,6 +210,7 @@
   /* Mobile content positioning */
   @media (max-width: 767px) {
     .hero-custom__content {
+
       position: var(--content-position-mobile, static);
       transform: translate(
         {% case content_position_mobile %}
