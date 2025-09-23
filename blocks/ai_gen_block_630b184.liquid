@@ -1,0 +1,275 @@
+{% doc %}
+  @prompt
+    Create a two-column Shopify section block: left column = large product/image card with rounded corners, 6px green outline and subtle drop shadow; right column = content block with a bold serif title, short center-aligned description copy, and a rounded green CTA button. Make it responsive (stack image on top at ≤768px), accessible (semantic HTML + alt text + focus styles), and provide theme settings for title text, body text, button label & url, image, image radius, border color, spacing, and alignment.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-two-column-card-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.spacing }}px;
+    align-items: center;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  .ai-two-column-card__image-column-{{ ai_gen_id }} {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ai-two-column-card__image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    border-radius: {{ block.settings.image_radius }}px;
+    border: 2px solid {{ block.settings.border_color }};
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .ai-two-column-card__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: calc({{ block.settings.image_radius }}px - 6px);
+  }
+
+  .ai-two-column-card__image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    min-height: 300px;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: calc({{ block.settings.image_radius }}px - 6px);
+    position: relative;
+  }
+
+  .ai-two-column-card__image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+    opacity: 0.3;
+  }
+
+  .ai-two-column-card__empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .ai-two-column-card__content-column-{{ ai_gen_id }} {
+    flex: 1;
+    min-width: 0;
+    text-align: {{ block.settings.content_alignment }};
+  }
+
+  .ai-two-column-card__title-{{ ai_gen_id }} {
+    
+    font-size: 2rem;
+    line-height: 1.2;
+    margin: 0 0 1rem 0;
+    color: inherit;
+  }
+
+  .ai-two-column-card__description-{{ ai_gen_id }} {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0 0 2rem 0;
+    color: inherit;
+  }
+
+  .ai-two-column-card__button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background-color: {{ block.settings.border_color }};
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .ai-two-column-card__button-{{ ai_gen_id }}:hover {
+    background-color: color-mix(in srgb, {{ block.settings.border_color }} 80%, black);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .ai-two-column-card__button-{{ ai_gen_id }}:focus {
+    outline: 2px solid {{ block.settings.border_color }};
+    outline-offset: 2px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-two-column-card-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: {{ block.settings.spacing | times: 0.75 }}px;
+    }
+
+    .ai-two-column-card__content-column-{{ ai_gen_id }} {
+      text-align: center;
+    }
+
+    .ai-two-column-card__title-{{ ai_gen_id }} {
+      font-size: 1.75rem;
+    }
+  }
+{% endstyle %}
+
+<div
+  class="ai-two-column-card-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-two-column-card__image-column-{{ ai_gen_id }}">
+    <div class="ai-two-column-card__image-wrapper-{{ ai_gen_id }}">
+      {% if block.settings.image %}
+        <img
+          src="{{ block.settings.image | image_url: width: 800 }}"
+          alt="{{ block.settings.image.alt | escape }}"
+          class="ai-two-column-card__image-{{ ai_gen_id }}"
+          loading="lazy"
+          width="{{ block.settings.image.width }}"
+          height="{{ block.settings.image.height }}"
+        >
+      {% else %}
+        <div class="ai-two-column-card__image-placeholder-{{ ai_gen_id }}">
+          {{ 'product-apparel-1' | placeholder_svg_tag }}
+          <div class="ai-two-column-card__empty-state-{{ ai_gen_id }}">
+            Add an image to get started
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="ai-two-column-card__content-column-{{ ai_gen_id }}">
+    {% if block.settings.title != blank %}
+      <h2 class="ai-two-column-card__title-{{ ai_gen_id }}">
+        {{ block.settings.title }}
+      </h2>
+    {% endif %}
+
+    {% if block.settings.description != blank %}
+      <div class="ai-two-column-card__description-{{ ai_gen_id }}">
+        {{ block.settings.description }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.button_label != blank %}
+      <a
+        href="{{ block.settings.button_url | default: '#' }}"
+        class="ai-two-column-card__button-{{ ai_gen_id }}"
+        {% if block.settings.button_url == blank %}aria-disabled="true"{% endif %}
+      >
+        {{ block.settings.button_label }}
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Two column card",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Featured Product"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Discover our latest collection of premium products designed to elevate your everyday experience."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border and button color",
+      "default": "#22c55e"
+    },
+    {
+      "type": "range",
+      "id": "spacing",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Column spacing",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Two column card"
+    }
+  ]
+}
+{% endschema %}

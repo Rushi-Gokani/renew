@@ -1,0 +1,268 @@
+{% doc %}
+  @prompt
+    Create a Shopify section called "Newsletter Signup — Modern" with a two-column layout, left column shows heading text ("Keep in touch") with bold styling and a description text below, right column has a rounded pill-shaped email input with placeholder "Email" and a gradient green pill-shaped "SIGN UP" button, include a small disclaimer text below the input that says "By clicking 'sign up' you are opting in to marketing. You can unsubscribe at any time. Privacy Policy." with "Privacy Policy" linked, make it responsive with stacked layout on mobile, and add customization options for heading text, description text, button label, background color, text color, button gradient, and privacy policy link., give heading text rich-text shcema, create a file so i can edit
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-newsletter-{{ ai_gen_id }} {
+    background-color: {{ block.settings.background_color }};
+    padding: 60px 20px;
+  }
+
+  .ai-newsletter-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .ai-newsletter-content-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-newsletter-heading-{{ ai_gen_id }} {
+    font-size: 48px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    line-height: 1.1;color: {{ block.settings.text_color }};
+  }
+
+  .ai-newsletter-description-{{ ai_gen_id }} {
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0.8;
+  }
+
+  .ai-newsletter-form-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .ai-newsletter-form-{{ ai_gen_id }} {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .ai-newsletter-input-{{ ai_gen_id }} {
+    flex: 1;
+    padding: 16px 24px;
+    border: 2px solid #e0e0e0;
+    border-radius: 50px;
+    font-size: 16px;
+    background: white;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+
+  .ai-newsletter-input-{{ ai_gen_id }}:focus {
+    border-color: {{ block.settings.button_gradient_start }};
+  }
+
+  .ai-newsletter-button-{{ ai_gen_id }} {
+    padding: 16px 32px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, {{ block.settings.button_gradient_start }}, {{ block.settings.button_gradient_end }});
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .ai-newsletter-button-{{ ai_gen_id }}:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-newsletter-disclaimer-{{ ai_gen_id }} {
+    font-size: 12px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.6;
+    line-height: 1.4;
+  }
+
+  .ai-newsletter-disclaimer-{{ ai_gen_id }} a {
+    color: {{ block.settings.text_color }};
+    text-decoration: underline;
+  }
+
+  .ai-newsletter-success-{{ ai_gen_id }} {
+    color: #22c55e;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  .ai-newsletter-error-{{ ai_gen_id }} {
+    color: #ef4444;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-newsletter-{{ ai_gen_id }} {
+      padding: 40px 20px;
+    }
+
+    .ai-newsletter-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      text-align: center;
+    }
+
+    .ai-newsletter-heading-{{ ai_gen_id }} {
+      font-size: 36px;
+    }
+
+    .ai-newsletter-form-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .ai-newsletter-input-{{ ai_gen_id }} {
+      padding: 18px 24px;
+    }
+
+    .ai-newsletter-button-{{ ai_gen_id }} {
+      padding: 18px 32px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-newsletter-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-newsletter-container-{{ ai_gen_id }}">
+    <div class="ai-newsletter-content-{{ ai_gen_id }}">
+      <div class="ai-newsletter-heading-{{ ai_gen_id }}">{{ block.settings.heading_text }}</div>
+      <p class="ai-newsletter-description-{{ ai_gen_id }}">{{ block.settings.description_text }}</p>
+    </div>
+
+    <div class="ai-newsletter-form-wrapper-{{ ai_gen_id }}">
+      {% form 'customer' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <div class="ai-newsletter-form-{{ ai_gen_id }}">
+          <input
+            type="email"
+            name="contact[email]"
+            class="ai-newsletter-input-{{ ai_gen_id }}"
+            placeholder="{{ block.settings.email_placeholder }}"
+            value="{{ form.email }}"
+            aria-required="true"
+            autocorrect="off"
+            autocapitalize="off"
+            autocomplete="email"
+            {% if form.errors %}
+              aria-invalid="true"
+              aria-describedby="ai-newsletter-error-{{ ai_gen_id }}"
+            {% endif %}
+            {% if form.posted_successfully? %}
+              aria-describedby="ai-newsletter-success-{{ ai_gen_id }}"
+            {% endif %}
+            required
+          >
+          <button type="submit" class="ai-newsletter-button-{{ ai_gen_id }}">
+            {{ block.settings.button_label }}
+          </button>
+        </div>
+
+        {% if form.errors %}
+          <div id="ai-newsletter-error-{{ ai_gen_id }}" class="ai-newsletter-error-{{ ai_gen_id }}">
+            {{ form.errors.messages.email }}
+          </div>
+        {% endif %}
+
+        {% if form.posted_successfully? %}
+          <div id="ai-newsletter-success-{{ ai_gen_id }}" class="ai-newsletter-success-{{ ai_gen_id }}">
+            Thanks for subscribing!
+          </div>
+        {% endif %}
+      {% endform %}
+
+      <p class="ai-newsletter-disclaimer-{{ ai_gen_id }}">
+        By clicking '{{ block.settings.button_label | downcase }}' you are opting in to marketing. You can unsubscribe at any time. <a href="{{ block.settings.privacy_policy_link }}">Privacy Policy</a>.
+      </p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Newsletter signup",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "heading_text",
+      "label": "Heading text",
+      "default": "<h2>Keep in touch</h2>"
+    },
+    {
+      "type": "textarea",
+      "id": "description_text",
+      "label": "Description text",
+      "default": "Subscribe to our newsletter and be the first to know about new products, exclusive offers, and updates."
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "SIGN UP"
+    },
+    {
+      "type": "url",
+      "id": "privacy_policy_link",
+      "label": "Privacy policy link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "button_gradient_start",
+      "label": "Button gradient start",
+      "default": "#10b981"
+    },
+    {
+      "type": "color",
+      "id": "button_gradient_end",
+      "label": "Button gradient end",
+      "default": "#059669"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter signup"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

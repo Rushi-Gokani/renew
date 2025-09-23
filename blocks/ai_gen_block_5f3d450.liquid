@@ -1,0 +1,934 @@
+{% doc %}
+  @prompt
+    Create a Shopify section called "Customer Testimonials — Trust Carousel" with a bold heading at the top including a star rating (e.g. "Join 1,000,000+ Customers Who Love [Brand]") and a subtitle, followed by a horizontal slider of testimonial cards each showing customer review text, customer name, and a small "Verified Customer" badge, include left and right navigation arrows, responsive carousel that shows 1–2 cards on mobile and 3–4 cards on desktop, add a footer row with Trustpilot rating stars, total review count, and a call-to-action button below (e.g. "Shop Superfoods"), and include customization options for heading text, subtitle, star rating, testimonials (text, name, verified badge toggle), background color, text color, Trustpilot link, and CTA button text + link., it should be in loop and testimonial on screen should be highlighted
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-testimonial-carousel-{{ ai_gen_id }} {
+    padding: 60px 20px;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-testimonial-container-{{ ai_gen_id }} {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  .ai-testimonial-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .ai-testimonial-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    margin: 0 0 10px;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-testimonial-stars-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 8px;
+    color: {{ block.settings.star_color }};
+  }
+
+  .ai-testimonial-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    margin: 10px 0 0;
+    opacity: 0.8;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+
+  .ai-testimonial-carousel-track-{{ ai_gen_id }} {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.6s cubic-bezier(.2,.9,.2,1);
+    padding: 0 50px;
+    will-change: transform;
+  }
+
+  .ai-testimonial-card-{{ ai_gen_id }} {
+    flex: 0 0 300px;
+    background: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid {{ block.settings.card_border_color }};
+    transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    opacity: 0.6;
+    transform: scale(0.95);
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .ai-testimonial-card-{{ ai_gen_id }}.active {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    border-color: {{ block.settings.highlight_border_color }};
+  }
+
+  .ai-testimonial-text-{{ ai_gen_id }} {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+    color: {{ block.settings.card_text_color }};
+    flex: 1 0 auto;
+  }
+
+  .ai-testimonial-author-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+  }
+
+  .ai-testimonial-name-{{ ai_gen_id }} {
+    font-weight: 600;
+    font-size: 14px;
+    color: {{ block.settings.card_text_color }};
+  }
+
+  .ai-testimonial-verified-{{ ai_gen_id }} {
+    background: {{ block.settings.verified_bg_color }};
+    color: {{ block.settings.verified_text_color }};
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .ai-testimonial-nav-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: {{ block.settings.nav_button_color }};
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    color: {{ block.settings.nav_button_text_color }};
+    z-index: 2;
+    transition: all 0.3s ease;
+  }
+
+  .ai-testimonial-nav-prev-{{ ai_gen_id }} {
+    left: 10px;
+  }
+
+  .ai-testimonial-nav-next-{{ ai_gen_id }} {
+    right: 10px;
+  }
+
+  .ai-testimonial-nav-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.nav_button_hover_color }};
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  .ai-testimonial-footer-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .ai-testimonial-trustpilot-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ai-testimonial-trustpilot-stars-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: {{ block.settings.star_color }};
+  }
+
+  .ai-testimonial-review-count-{{ ai_gen_id }} {
+    font-size: 14px;
+    opacity: 0.8;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-testimonial-trustpilot-link-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    text-decoration: none;
+  }
+
+  .ai-testimonial-cta-{{ ai_gen_id }} {
+    background: {{ block.settings.cta_bg_color }};
+    color: {{ block.settings.cta_text_color }};
+    padding: 14px 28px;
+    border: none;
+    border-radius: {{ block.settings.cta_border_radius }}px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .ai-testimonial-cta-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.cta_hover_color }};
+  }
+
+  .ai-testimonial-indicators-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+    margin-bottom:20px;
+  }
+
+  .ai-testimonial-indicator-{{ ai_gen_id }} {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: {{ block.settings.text_color }};
+    opacity: 0.3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .ai-testimonial-indicator-{{ ai_gen_id }}.active {
+    opacity: 1;
+    background: {{ block.settings.star_color }};
+  }
+
+  @media (max-width: 768px) {
+    .ai-testimonial-carousel-track-{{ ai_gen_id }} {
+      padding: 0 20px;
+    }
+
+    .ai-testimonial-card-{{ ai_gen_id }} {
+      flex: 0 0 280px;
+    }
+
+    .ai-testimonial-nav-{{ ai_gen_id }} {
+      display: none;
+    }
+
+    .ai-testimonial-footer-{{ ai_gen_id }} {
+      flex-direction: column;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .ai-testimonial-card-{{ ai_gen_id }} {
+      flex: 0 0 calc(33.333% - 14px);
+      min-width: 300px;
+      min-height: 200px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .ai-testimonial-card-{{ ai_gen_id }} {
+      flex: 0 0 calc(25% - 15px);
+    }
+  }
+{% endstyle %}
+
+<testimonial-carousel-{{ ai_gen_id }}
+  class="ai-testimonial-carousel-{{ ai_gen_id }}"
+  data-autoplay="{{ block.settings.autoplay }}"
+  data-autoplay-speed="{{ block.settings.autoplay_speed }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-testimonial-container-{{ ai_gen_id }}">
+    <div class="ai-testimonial-header-{{ ai_gen_id }}">
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-testimonial-heading-{{ ai_gen_id }}">
+          {{ block.settings.heading }}
+        </h2>
+      {% endif %}
+      {% if block.settings.subtitle != blank %}
+        <p class="ai-testimonial-subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+
+    <div class="ai-testimonial-carousel-wrapper-{{ ai_gen_id }}">
+      <div class="ai-testimonial-carousel-track-{{ ai_gen_id }}" data-carousel-track>
+        {%- assign testimonials = '' | split: ',' -%}
+        {%- for i in (1..6) -%}
+          {%- assign testimonial_text_key = 'testimonial_' | append: i | append: '_text' -%}
+          {%- assign testimonial_name_key = 'testimonial_' | append: i | append: '_name' -%}
+          {%- assign testimonial_verified_key = 'testimonial_' | append: i | append: '_verified' -%}
+          
+          {%- assign testimonial_text = block.settings[testimonial_text_key] -%}
+          {%- assign testimonial_name = block.settings[testimonial_name_key] -%}
+          {%- if testimonial_text != blank and testimonial_name != blank -%}
+            {%- assign testimonials = testimonials | append: i | append: ',' -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- assign testimonials = testimonials | split: ',' | compact -%}
+
+        {%- for testimonial_index in testimonials -%}
+          {%- assign testimonial_text_key = 'testimonial_' | append: testimonial_index | append: '_text' -%}
+          {%- assign testimonial_name_key = 'testimonial_' | append: testimonial_index | append: '_name' -%}
+          {%- assign testimonial_verified_key = 'testimonial_' | append: testimonial_index | append: '_verified' -%}
+          
+          {%- assign testimonial_text = block.settings[testimonial_text_key] -%}
+          {%- assign testimonial_name = block.settings[testimonial_name_key] -%}
+          {%- assign testimonial_verified = block.settings[testimonial_verified_key] -%}
+
+          {%- if testimonial_text != blank and testimonial_name != blank -%}
+            <div class="ai-testimonial-card-{{ ai_gen_id }}" data-testimonial-index="{{ forloop.index0 }}">
+              <div class="ai-testimonial-text-{{ ai_gen_id }}">
+                "{{ testimonial_text }}"
+              </div>
+              <div class="ai-testimonial-author-{{ ai_gen_id }}">
+                <div class="ai-testimonial-name-{{ ai_gen_id }}">{{ testimonial_name }}</div>
+                {%- if testimonial_verified -%}
+                  <div class="ai-testimonial-verified-{{ ai_gen_id }}">Verified Customer</div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <button class="ai-testimonial-nav-{{ ai_gen_id }} ai-testimonial-nav-prev-{{ ai_gen_id }}" data-nav-prev aria-label="Previous testimonials">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15,18 9,12 15,6"></polyline>
+        </svg>
+      </button>
+
+      <button class="ai-testimonial-nav-{{ ai_gen_id }} ai-testimonial-nav-next-{{ ai_gen_id }}" data-nav-next aria-label="Next testimonials">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9,18 15,12 9,6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <div class="ai-testimonial-indicators-{{ ai_gen_id }}" data-indicators></div>
+
+    <div class="ai-testimonial-footer-{{ ai_gen_id }}">
+      {% if block.settings.show_trustpilot %}
+        <div class="ai-testimonial-trustpilot-{{ ai_gen_id }}">
+          {% if block.settings.trustpilot_link != blank %}
+            <a href="{{ block.settings.trustpilot_link }}" class="ai-testimonial-trustpilot-link-{{ ai_gen_id }}" target="_blank">
+          {% endif %}
+          <div class="ai-testimonial-trustpilot-stars-{{ ai_gen_id }}">
+            {% for i in (1..5) %}
+              {% if i <= block.settings.trustpilot_rating %}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              {% else %}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              {% endif %}
+            {% endfor %}
+          </div>
+          {% if block.settings.review_count != blank %}
+            <div class="ai-testimonial-review-count-{{ ai_gen_id }}">
+              Based on {{ block.settings.review_count }} reviews
+            </div>
+          {% endif %}
+          {% if block.settings.trustpilot_link != blank %}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if block.settings.cta_text != blank %}
+        <a href="{{ block.settings.cta_link }}" class="ai-testimonial-cta-{{ ai_gen_id }}">
+          {{ block.settings.cta_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</testimonial-carousel-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class TestimonialCarousel{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.currentIndex = 0; // left-most visible index (used for paging/translate)
+        this.highlightIndex = 0; // exact card index we want highlighted/centered
+        this.autoplayInterval = null;
+        this.resizing = false;
+      }
+
+      connectedCallback() {
+        this.track = this.querySelector('[data-carousel-track]');
+        this.prevBtn = this.querySelector('[data-nav-prev]');
+        this.nextBtn = this.querySelector('[data-nav-next]');
+        this.indicatorsContainer = this.querySelector('[data-indicators]');
+        this.cards = Array.from(this.querySelectorAll('.ai-testimonial-card-{{ ai_gen_id }}'));
+        this.autoplay = this.dataset.autoplay === 'true';
+        this.autoplaySpeed = parseInt(this.dataset.autoplaySpeed) || 3000;
+        
+        if (this.track && this.cards.length > 0) {
+          this.setupCarousel();
+          this.setupNavigation();
+          this.setupIndicators();
+          // small timeout to allow layout/fonts to settle
+          setTimeout(() => {
+            // start from the first card highlighted
+            this.highlightIndex = 0;
+            this.syncCurrentIndexToHighlight();
+            this.updateCarousel(true);
+            if (this.autoplay) this.startAutoplay();
+          }, 30);
+        }
+      }
+
+      disconnectedCallback() {
+        this.stopAutoplay();
+        window.removeEventListener('resize', this._resizeHandler);
+      }
+
+      setupCarousel() {
+        this.cardsPerView = this.getCardsPerView();
+        this.gap = 20; // must match CSS gap
+        this.maxIndex = Math.max(0, this.cards.length - this.cardsPerView);
+        // keep highlightIndex in range
+        this.highlightIndex = Math.max(0, Math.min(this.highlightIndex, this.cards.length - 1));
+      }
+
+      getCardsPerView() {
+        if (window.innerWidth >= 1200) return 4;
+        if (window.innerWidth >= 769) return 3;
+        if (window.innerWidth >= 480) return 2;
+        return 1;
+      }
+
+      setupNavigation() {
+        if (this.prevBtn && this.nextBtn) {
+          this.prevBtn.addEventListener('click', () => this.goToPrev());
+          this.nextBtn.addEventListener('click', () => this.goToNext());
+        }
+
+        // debounce resize
+        this._resizeHandler = () => {
+          if (this.resizing) return;
+          this.resizing = true;
+          window.requestAnimationFrame(() => {
+            const oldCardsPerView = this.cardsPerView;
+            this.setupCarousel();
+            // If cardsPerView changed, re-sync current index to keep highlight centered
+            if (oldCardsPerView !== this.cardsPerView) {
+              this.syncCurrentIndexToHighlight();
+            }
+            this.updateCarousel();
+            this.resizing = false;
+          });
+        };
+        window.addEventListener('resize', this._resizeHandler);
+      }
+
+      setupIndicators() {
+        if (!this.indicatorsContainer) return;
+        
+        this.indicatorsContainer.innerHTML = '';
+        // number of pages is maxIndex + 1
+        const pages = Math.max(1, this.maxIndex + 1);
+        for (let i = 0; i < pages; i++) {
+          const indicator = document.createElement('div');
+          indicator.className = 'ai-testimonial-indicator-{{ ai_gen_id }}';
+          indicator.addEventListener('click', () => {
+            // when user clicks a page indicator, move highlight to the page's center card
+            const pageLeftIndex = i; // left-most index for page
+            const centerIndex = pageLeftIndex + Math.floor(this.cardsPerView / 2);
+            const target = Math.max(0, Math.min(centerIndex, this.cards.length - 1));
+            this.goToHighlight(target);
+          });
+          this.indicatorsContainer.appendChild(indicator);
+        }
+      }
+
+      // compute currentIndex (left-most) so that highlightIndex is centered when possible
+      syncCurrentIndexToHighlight() {
+        const half = Math.floor(this.cardsPerView / 2);
+        let desiredLeft = this.highlightIndex - half;
+        desiredLeft = Math.max(0, desiredLeft);
+        desiredLeft = Math.min(this.maxIndex, desiredLeft);
+        this.currentIndex = desiredLeft;
+      }
+
+      updateActiveCard() {
+        // highlightIndex is the single highlighted card
+        const centerIndex = this.highlightIndex;
+        this.cards.forEach((card, index) => {
+          card.classList.toggle('active', index === centerIndex);
+        });
+
+        // update indicators (indicators reflect pages; choose the page that contains currentIndex)
+        const indicators = this.indicatorsContainer ? this.indicatorsContainer.querySelectorAll('.ai-testimonial-indicator-{{ ai_gen_id }}') : [];
+        indicators.forEach((indicator, idx) => {
+          indicator.classList.toggle('active', idx === this.currentIndex);
+        });
+      }
+
+      updateCarousel(initial = false) {
+        if (!this.cards || this.cards.length === 0) return;
+
+        // recalc sizes
+        const cardWidth = this.cards[0].offsetWidth;
+        const cardWidthWithGap = cardWidth + this.gap;
+        const wrapper = this.track.parentElement;
+        const wrapperWidth = wrapper.offsetWidth;
+
+        // ensure currentIndex is in range (it should be because syncCurrentIndexToHighlight clamps)
+        this.currentIndex = Math.max(0, Math.min(this.currentIndex, this.maxIndex));
+
+        // compute center of the highlight card
+        const centerOfCard = (this.highlightIndex * cardWidthWithGap) + (cardWidth / 2);
+        const desiredTranslate = centerOfCard - (wrapperWidth / 2);
+
+        // apply translate (negate to move track left)
+        this.track.style.transform = `translateX(${-desiredTranslate}px)`;
+
+        // ensure indicators and active classes correct
+        this.updateActiveCard();
+
+        if (initial) {
+          // force reflow to avoid jump on load
+          this.track.getBoundingClientRect();
+        }
+      }
+
+      // move highlight to a specific card index
+      goToHighlight(cardIndex) {
+        this.stopAutoplay();
+        this.highlightIndex = Math.max(0, Math.min(cardIndex, this.cards.length - 1));
+        this.syncCurrentIndexToHighlight();
+        this.updateCarousel();
+        if (this.autoplay) this.startAutoplay();
+      }
+
+      goToNext() {
+        this.stopAutoplay();
+        // advance highlight to next card, loop when passing last
+        this.highlightIndex = (this.highlightIndex + 1) % this.cards.length;
+        this.syncCurrentIndexToHighlight();
+        this.updateCarousel();
+        if (this.autoplay) this.startAutoplay();
+      }
+
+      goToPrev() {
+        this.stopAutoplay();
+        // move highlight to previous card, loop backwards
+        this.highlightIndex = (this.highlightIndex - 1 + this.cards.length) % this.cards.length;
+        this.syncCurrentIndexToHighlight();
+        this.updateCarousel();
+        if (this.autoplay) this.startAutoplay();
+      }
+
+      // If user clicks a page indicator we route to the center card of that page
+      goToSlide(pageIndex) {
+        this.stopAutoplay();
+        const pageLeftIndex = Math.max(0, Math.min(pageIndex, this.maxIndex));
+        const centerIndex = pageLeftIndex + Math.floor(this.cardsPerView / 2);
+        this.highlightIndex = Math.max(0, Math.min(centerIndex, this.cards.length - 1));
+        this.syncCurrentIndexToHighlight();
+        this.updateCarousel();
+        if (this.autoplay) this.startAutoplay();
+      }
+
+      startAutoplay() {
+        if (!this.autoplay) return;
+        this.stopAutoplay();
+        this.autoplayInterval = setInterval(() => {
+          // increment highlightIndex by 1 (per-card loop)
+          this.highlightIndex = (this.highlightIndex + 1) % this.cards.length;
+          this.syncCurrentIndexToHighlight();
+          this.updateCarousel();
+        }, this.autoplaySpeed);
+      }
+
+      stopAutoplay() {
+        if (this.autoplayInterval) {
+          clearInterval(this.autoplayInterval);
+          this.autoplayInterval = null;
+        }
+      }
+    }
+
+    customElements.define('testimonial-carousel-{{ ai_gen_id }}', TestimonialCarousel{{ ai_gen_id }});
+  })();
+</script>
+
+
+
+{% schema %}
+{
+  "name": "Trust carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join 1,000,000+ Customers Who Love Our Brand"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "See what our customers are saying about us"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header_stars",
+      "label": "Show stars in heading",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "star_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Star rating",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Carousel settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2000,
+      "max": 8000,
+      "step": 500,
+      "unit": "ms",
+      "label": "Autoplay speed",
+      "default": 4000
+    },
+    {
+      "type": "header",
+      "content": "Testimonials"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_1_text",
+      "label": "Testimonial 1 text",
+      "default": "Amazing product quality and fast shipping. Highly recommend!"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_1_name",
+      "label": "Testimonial 1 name",
+      "default": "Sarah M."
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_1_verified",
+      "label": "Testimonial 1 verified",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "testimonial_2_text",
+      "label": "Testimonial 2 text",
+      "default": "Excellent customer service and the product exceeded my expectations."
+    },
+    {
+      "type": "text",
+      "id": "testimonial_2_name",
+      "label": "Testimonial 2 name",
+      "default": "John D."
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_2_verified",
+      "label": "Testimonial 2 verified",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "testimonial_3_text",
+      "label": "Testimonial 3 text",
+      "default": "Love this brand! Great quality and value for money."
+    },
+    {
+      "type": "text",
+      "id": "testimonial_3_name",
+      "label": "Testimonial 3 name",
+      "default": "Emily R."
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_3_verified",
+      "label": "Testimonial 3 verified",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "testimonial_4_text",
+      "label": "Testimonial 4 text",
+      "default": "Fast delivery and excellent packaging. Will order again!"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_4_name",
+      "label": "Testimonial 4 name",
+      "default": "Michael K."
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_4_verified",
+      "label": "Testimonial 4 verified",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "testimonial_5_text",
+      "label": "Testimonial 5 text",
+      "default": "Outstanding quality and great customer support team."
+    },
+    {
+      "type": "text",
+      "id": "testimonial_5_name",
+      "label": "Testimonial 5 name",
+      "default": "Lisa T."
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_5_verified",
+      "label": "Testimonial 5 verified",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "testimonial_6_text",
+      "label": "Testimonial 6 text",
+      "default": "Best purchase I've made this year. Highly satisfied!"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_6_name",
+      "label": "Testimonial 6 name",
+      "default": "David R."
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_6_verified",
+      "label": "Testimonial 6 verified",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Trustpilot"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trustpilot",
+      "label": "Show Trustpilot section",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "trustpilot_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Trustpilot rating",
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "review_count",
+      "label": "Review count",
+      "default": "10,000"
+    },
+    {
+      "type": "url",
+      "id": "trustpilot_link",
+      "label": "Trustpilot link"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Stars",
+      "default": "#ffc107"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Card text",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border",
+      "default": "#e9ecef"
+    },
+    {
+      "type": "color",
+      "id": "highlight_border_color",
+      "label": "Highlighted card border",
+      "default": "#007bff"
+    },
+    {
+      "type": "color",
+      "id": "verified_bg_color",
+      "label": "Verified badge background",
+      "default": "#28a745"
+    },
+    {
+      "type": "color",
+      "id": "verified_text_color",
+      "label": "Verified badge text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_color",
+      "label": "Navigation button",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_text_color",
+      "label": "Navigation button icon",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_hover_color",
+      "label": "Navigation button hover",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "CTA background",
+      "default": "#007bff"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "CTA text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cta_hover_color",
+      "label": "CTA hover",
+      "default": "#0056b3"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "cta_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "CTA border radius",
+      "default": 6
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust carousel"
+    }
+  ]
+}
+{% endschema %}
