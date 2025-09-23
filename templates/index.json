@@ -520,7 +520,7 @@
             "description": "<p>Share the love and earn rewards! When your friends make their first purchase, you both get exclusive discounts. It's our way of saying thank you for spreading the word about products you love.</p>",
             "button_label": "Start Referring",
             "button_url": "",
-            "image": "shopify://shop_images/Gemini_Generated_Image_jnkg6jjnkg6jjnkg.png",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2025_03_54_56_PM-Photoroom.png",
             "background_color": "#f0f7f4",
             "text_color": "#1a1a1a",
             "button_color": "#2d5a3d",
@@ -848,8 +848,8 @@
             "privacy_policy_link": "",
             "background_color": "#00593b",
             "text_color": "#ffffff",
-            "button_gradient_start": "#10b981",
-            "button_gradient_end": "#059669"
+            "button_gradient_start": "#e6e6e6",
+            "button_gradient_end": "#00593b"
           },
           "blocks": {}
         }
