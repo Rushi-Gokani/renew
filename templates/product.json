@@ -262,6 +262,79 @@
         "gap_between_elements": 24
       }
     },
+    "1758624692fff09e80": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_c6609d0_Lb8nR6": {
+          "type": "ai_gen_block_c6609d0",
+          "settings": {
+            "headline": "Enjoy Your Daily Greens",
+            "paragraph": "<p>Discover the perfect blend of nutrition and taste with our carefully crafted green recipes that make healthy eating enjoyable.</p>",
+            "feature_1_text": "100% organic ingredients",
+            "feature_2_text": "Rich in vitamins and minerals",
+            "feature_3_text": "Sustainably sourced",
+            "cta_text": "See More Recipes",
+            "cta_link": "",
+            "product_image_1": "shopify://shop_images/hand-pours-a-green-liquid-into-a-glass-of-ice-and-milk.jpg",
+            "product_image_2": "shopify://shop_images/Untitleddesign_10.png",
+            "product_image_3": "shopify://shop_images/Untitleddesign_11.png",
+            "background_color": "#00593b",
+            "border_color": "rgba(0,0,0,0)",
+            "headline_color": "#ffffff",
+            "paragraph_color": "#ffffff",
+            "feature_text_color": "#ffffff",
+            "icon_background": "#00b558",
+            "icon_color": "#ffffff",
+            "cta_background": "#f0f7f4",
+            "cta_text_color": "#000000",
+            "cta_hover_background": "#3d6b4a",
+            "dot_active_color": "#4a7c59",
+            "dot_inactive_color": "#cbd5e0",
+            "arrow_background": "#ffffff",
+            "arrow_color": "#4a7c59",
+            "arrow_hover_background": "#f7fafc",
+            "headline_size": 48,
+            "paragraph_size": 16,
+            "feature_text_size": 16,
+            "cta_text_size": 16,
+            "border_width": 4,
+            "border_radius": 24,
+            "icon_size": 40
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_c6609d0_Lb8nR6"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-0f65139f-75ed-4e03-b491-97b25f74c20c",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "blocks_CYfctY": {
       "type": "_blocks",
       "blocks": {
@@ -749,6 +822,7 @@
   "order": [
     "main",
     "marquee_YaAMKe",
+    "1758624692fff09e80",
     "blocks_CYfctY",
     "blocks_CieCxC",
     "product_recommendations_iA6pyd",
