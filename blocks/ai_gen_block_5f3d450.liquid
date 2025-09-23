@@ -8,6 +8,7 @@
   .ai-testimonial-carousel-{{ ai_gen_id }} {
     padding: 60px 20px;
     color: {{ block.settings.text_color }};
+    overflow-x: hidden;
   }
 
   .ai-testimonial-container-{{ ai_gen_id }} {
@@ -45,6 +46,7 @@
     position: relative;
     margin-bottom: 40px;
     overflow: hidden;
+    width: 100%;
   }
 
   .ai-testimonial-carousel-track-{{ ai_gen_id }} {
@@ -53,6 +55,7 @@
     transition: transform 0.6s cubic-bezier(.2,.9,.2,1);
     padding: 0 50px;
     will-change: transform;
+    width: 100%;
   }
 
   .ai-testimonial-card-{{ ai_gen_id }} {
@@ -216,12 +219,21 @@
   }
 
   @media (max-width: 768px) {
+    .ai-testimonial-carousel-{{ ai_gen_id }} {
+      padding: 40px 10px;
+    }
+
     .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-      padding: 0 20px;
+      padding: 0 10px;
+      gap: 15px;
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 280px;
+      flex: 0 0 calc(100vw - 40px);
+      max-width: 320px;
+      min-width: 280px;
+      padding: 20px;
+      min-height: 140px;
     }
 
     .ai-testimonial-nav-{{ ai_gen_id }} {
@@ -230,6 +242,20 @@
 
     .ai-testimonial-footer-{{ ai_gen_id }} {
       flex-direction: column;
+    }
+
+    .ai-testimonial-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+      line-height: 1.2;
+    }
+
+    .ai-testimonial-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.9 }}px;
+    }
+
+    .ai-testimonial-text-{{ ai_gen_id }} {
+      font-size: 14px;
+      line-height: 1.4;
     }
   }
 
@@ -244,6 +270,42 @@
   @media (min-width: 1200px) {
     .ai-testimonial-card-{{ ai_gen_id }} {
       flex: 0 0 calc(25% - 15px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .ai-testimonial-carousel-{{ ai_gen_id }} {
+      padding: 30px 5px;
+    }
+
+    .ai-testimonial-carousel-track-{{ ai_gen_id }} {
+      padding: 0 5px;
+      gap: 12px;
+    }
+
+    .ai-testimonial-card-{{ ai_gen_id }} {
+      flex: 0 0 calc(100vw - 20px);
+      max-width: 300px;
+      min-width: 260px;
+      padding: 16px;
+      min-height: 120px;
+    }
+
+    .ai-testimonial-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.7 }}px;
+    }
+
+    .ai-testimonial-text-{{ ai_gen_id }} {
+      font-size: 13px;
+    }
+
+    .ai-testimonial-name-{{ ai_gen_id }} {
+      font-size: 13px;
+    }
+
+    .ai-testimonial-verified-{{ ai_gen_id }} {
+      font-size: 11px;
+      padding: 3px 6px;
     }
   }
 {% endstyle %}
@@ -370,6 +432,9 @@
         this.highlightIndex = 0; // exact card index we want highlighted/centered
         this.autoplayInterval = null;
         this.resizing = false;
+        this.touchStartX = 0;
+        this.touchEndX = 0;
+        this.isDragging = false;
       }
 
       connectedCallback() {
@@ -385,6 +450,7 @@
           this.setupCarousel();
           this.setupNavigation();
           this.setupIndicators();
+          this.setupTouchEvents();
           // small timeout to allow layout/fonts to settle
           setTimeout(() => {
             // start from the first card highlighted
@@ -457,6 +523,44 @@
             this.goToHighlight(target);
           });
           this.indicatorsContainer.appendChild(indicator);
+        }
+      }
+
+      setupTouchEvents() {
+        if (!this.track) return;
+
+        this.track.addEventListener('touchstart', (e) => {
+          this.touchStartX = e.touches[0].clientX;
+          this.isDragging = true;
+          this.stopAutoplay();
+        }, { passive: true });
+
+        this.track.addEventListener('touchmove', (e) => {
+          if (!this.isDragging) return;
+          e.preventDefault();
+        }, { passive: false });
+
+        this.track.addEventListener('touchend', (e) => {
+          if (!this.isDragging) return;
+          this.touchEndX = e.changedTouches[0].clientX;
+          this.handleSwipe();
+          this.isDragging = false;
+          if (this.autoplay) this.startAutoplay();
+        }, { passive: true });
+      }
+
+      handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = this.touchStartX - this.touchEndX;
+
+        if (Math.abs(diff) > swipeThreshold) {
+          if (diff > 0) {
+            // Swipe left - next
+            this.goToNext();
+          } else {
+            // Swipe right - previous
+            this.goToPrev();
+          }
         }
       }
 
