@@ -118,3 +118,13 @@ Visit the demo page at `/pages/minimalist-collection-demo` to see the component 
 ## Integration
 
 The component is automatically loaded through the `scripts.liquid` file and doesn't require any additional setup for basic usage.
+
+### Block Integration
+
+The minimalist product card is now integrated into the `_product-card.liquid` block, making it available throughout your theme. The block includes:
+
+- **Image Aspect Ratio Control**: Choose from square, portrait, or landscape ratios
+- **Border Radius**: Customizable rounded corners (default: 12px)
+- **Gap Settings**: Control spacing between product cards
+
+The block schema has been simplified to focus on the essential minimalist design elements while maintaining the clean, modern aesthetic.

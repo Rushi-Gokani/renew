@@ -9,7 +9,8 @@
 
 {% liquid
   assign block_settings = block.settings | default: settings
-  assign image_aspect_ratio = image_aspect_ratio | default: '1/1'
+  assign image_aspect_ratio = image_aspect_ratio | default: block_settings.image_aspect_ratio | default: '1/1'
+  assign border_radius = block_settings.border_radius | default: 12
 
   # Get the first available variant for pricing
   assign current_variant = product.selected_or_first_available_variant
@@ -129,7 +130,7 @@
     display: flex;
     flex-direction: column;
     background: white;
-    border-radius: 12px;
+    border-radius: {{ border_radius }}px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
