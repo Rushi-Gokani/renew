@@ -93,6 +93,8 @@
     "mobile_image_position": "Mobile Image Position",
     "mobile_image_fit": "Mobile Image Fit",
     "mobile_fullscreen": "Mobile fullscreen image",
+    "mobile_media_2": "Mobile media 2",
+    "mobile_customization_2": "Mobile customization 2",
     // Section header for navigation menu settings in theme editor
     "menu": "Menu",
     "mobile_column_optimization": "Columns will automatically optimize for mobile",
