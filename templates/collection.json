@@ -71,54 +71,6 @@
         "padding-block-end": 32
       }
     },
-    "collection_browser_DqFPKa": {
-      "type": "collection-browser",
-      "blocks": {
-        "filters": {
-          "type": "filters",
-          "disabled": true,
-          "static": true,
-          "settings": {
-            "enable_filtering": false,
-            "filter_style": "horizontal",
-            "filter_width": "centered",
-            "text_label_case": "default",
-            "show_swatch_label": false,
-            "show_filter_label": false,
-            "enable_sorting": true,
-            "enable_grid_density": true,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0,
-            "facets_margin_bottom": 8,
-            "facets_margin_right": 20
-          },
-          "blocks": {}
-        },
-        "product-card": {
-          "type": "_product-card",
-          "static": true,
-          "settings": {
-            "product_card_gap": 16,
-            "image_aspect_ratio": "1/1",
-            "border_radius": 12
-          },
-          "blocks": {}
-        }
-      },
-      "disabled": true,
-      "name": "Collection browser",
-      "settings": {
-        "collection": "",
-        "per_page": 24,
-        "color_scheme": "",
-        "padding-block-start": 8,
-        "padding-block-end": 8
-      }
-    },
     "main": {
       "type": "main-collection",
       "blocks": {
@@ -174,7 +126,6 @@
   },
   "order": [
     "section",
-    "collection_browser_DqFPKa",
     "main"
   ]
 }
