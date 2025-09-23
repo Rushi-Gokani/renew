@@ -8,15 +8,20 @@
   .ai-testimonial-carousel-{{ ai_gen_id }} {
     padding: 60px 20px;
     color: {{ block.settings.text_color }};
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
     position: relative;
     width: 100%;
     box-sizing: border-box;
+    max-width: 100%;
   }
 
   .ai-testimonial-container-{{ ai_gen_id }} {
     max-width: 1440px;
     margin: 0 auto;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .ai-testimonial-header-{{ ai_gen_id }} {
@@ -45,14 +50,15 @@
     color: {{ block.settings.text_color }};
   }
 
-    .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
-      position: relative;
-      margin-bottom: 40px;
-      overflow: hidden;
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
+  .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    margin-bottom: 40px;
+    overflow-x: hidden;
+    overflow-y: visible;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
 
   .ai-testimonial-carousel-track-{{ ai_gen_id }} {
     display: flex;
@@ -60,10 +66,13 @@
     transition: transform 0.6s cubic-bezier(.2,.9,.2,1);
     padding: 0 50px;
     will-change: transform;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: visible;
   }
 
   .ai-testimonial-card-{{ ai_gen_id }} {
-    flex: 0 0 300px;
     background: {{ block.settings.card_background }};
     border-radius: {{ block.settings.card_border_radius }}px;
     padding: 24px;
@@ -76,6 +85,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-sizing: border-box;
+    max-width: 100%;
   }
 
   .ai-testimonial-card-{{ ai_gen_id }}.active {
@@ -204,7 +215,9 @@
     justify-content: center;
     gap: 8px;
     margin-top: 20px;
-    margin-bottom:20px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding: 0 10px;
   }
 
   .ai-testimonial-indicator-{{ ai_gen_id }} {
@@ -223,74 +236,21 @@
   }
 
   @media (max-width: 768px) {
+    .ai-testimonial-indicators-{{ ai_gen_id }} {
+      padding: 0 5px;
+      gap: 6px;
+      justify-content: flex-start;
+      scroll-behavior: smooth;
+    }
+
+    .ai-testimonial-indicator-{{ ai_gen_id }} {
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+    }
+
     .ai-testimonial-carousel-{{ ai_gen_id }} {
-      padding: 40px 15px;
-      overflow-x: hidden;
-      overflow-y: visible;
-      box-sizing: border-box;
-    }
-
-    .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
-      overflow-x: hidden;
-      overflow-y: visible;
-    }
-
-    .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-      padding: 0;
-      gap: 15px;
-      margin: 0;
-      width: 100%;
-    }
-
-    .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 30px);
-      max-width: 100%;
-      min-width: 280px;
-      padding: 20px;
-      min-height: 140px;
-      box-sizing: border-box;
-    }
-
-    .ai-testimonial-nav-{{ ai_gen_id }} {
-      display: none;
-    }
-
-    .ai-testimonial-footer-{{ ai_gen_id }} {
-      flex-direction: column;
-    }
-
-    .ai-testimonial-heading-{{ ai_gen_id }} {
-      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
-      line-height: 1.2;
-    }
-
-    .ai-testimonial-subtitle-{{ ai_gen_id }} {
-      font-size: {{ block.settings.subtitle_size | times: 0.9 }}px;
-    }
-
-    .ai-testimonial-text-{{ ai_gen_id }} {
-      font-size: 14px;
-      line-height: 1.4;
-    }
-  }
-
-  @media (min-width: 769px) {
-    .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(33.333% - 14px);
-      min-width: 300px;
-      min-height: 200px;
-    }
-  }
-
-  @media (min-width: 1200px) {
-    .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(25% - 15px);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .ai-testimonial-carousel-{{ ai_gen_id }} {
-      padding: 30px 10px;
+      padding: 40px 10px;
       overflow-x: hidden;
       overflow-y: visible;
       box-sizing: border-box;
@@ -310,34 +270,65 @@
 
     .ai-testimonial-card-{{ ai_gen_id }} {
       flex: 0 0 calc(100vw - 20px);
-      max-width: 100%;
+      max-width: calc(100vw - 20px);
       min-width: 260px;
-      padding: 16px;
-      min-height: 120px;
+      padding: 18px;
+      min-height: 130px;
       box-sizing: border-box;
     }
 
+    .ai-testimonial-nav-{{ ai_gen_id }} {
+      display: none;
+    }
+
+    .ai-testimonial-footer-{{ ai_gen_id }} {
+      flex-direction: column;
+    }
+
     .ai-testimonial-heading-{{ ai_gen_id }} {
-      font-size: {{ block.settings.heading_size | times: 0.7 }}px;
+      font-size: {{ block.settings.heading_size | times: 0.75 }}px;
+      line-height: 1.2;
+    }
+
+    .ai-testimonial-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.85 }}px;
     }
 
     .ai-testimonial-text-{{ ai_gen_id }} {
       font-size: 13px;
-    }
-
-    .ai-testimonial-name-{{ ai_gen_id }} {
-      font-size: 13px;
-    }
-
-    .ai-testimonial-verified-{{ ai_gen_id }} {
-      font-size: 11px;
-      padding: 3px 6px;
+      line-height: 1.4;
     }
   }
 
-  @media (max-width: 375px) {
+  @media (min-width: 1200px) {
+    .ai-testimonial-card-{{ ai_gen_id }} {
+      flex: 0 0 calc(25% - 15px);
+      min-width: 280px;
+      min-height: 180px;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1199px) {
+    .ai-testimonial-card-{{ ai_gen_id }} {
+      flex: 0 0 calc(33.333% - 14px);
+      min-width: 280px;
+      min-height: 180px;
+    }
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    .ai-testimonial-card-{{ ai_gen_id }} {
+      flex: 0 0 calc(50vw - 25px);
+      min-width: 280px;
+      max-width: 400px;
+      min-height: 160px;
+    }
+  }
+
+
+  @media (max-width: 480px) {
     .ai-testimonial-carousel-{{ ai_gen_id }} {
-      padding: 25px 8px;
+      padding: 30px 8px;
       overflow-x: hidden;
       overflow-y: visible;
       box-sizing: border-box;
@@ -357,10 +348,10 @@
 
     .ai-testimonial-card-{{ ai_gen_id }} {
       flex: 0 0 calc(100vw - 16px);
-      max-width: 100%;
-      min-width: 250px;
-      padding: 14px;
-      min-height: 110px;
+      max-width: calc(100vw - 16px);
+      min-width: 240px;
+      padding: 16px;
+      min-height: 120px;
       box-sizing: border-box;
     }
 
@@ -368,8 +359,13 @@
       font-size: {{ block.settings.heading_size | times: 0.65 }}px;
     }
 
+    .ai-testimonial-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.8 }}px;
+    }
+
     .ai-testimonial-text-{{ ai_gen_id }} {
       font-size: 12px;
+      line-height: 1.3;
     }
 
     .ai-testimonial-name-{{ ai_gen_id }} {
@@ -378,6 +374,58 @@
 
     .ai-testimonial-verified-{{ ai_gen_id }} {
       font-size: 10px;
+      padding: 2px 4px;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .ai-testimonial-carousel-{{ ai_gen_id }} {
+      padding: 25px 6px;
+      overflow-x: hidden;
+      overflow-y: visible;
+      box-sizing: border-box;
+    }
+
+    .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
+      overflow-x: hidden;
+      overflow-y: visible;
+    }
+
+    .ai-testimonial-carousel-track-{{ ai_gen_id }} {
+      padding: 0;
+      gap: 8px;
+      margin: 0;
+      width: 100%;
+    }
+
+    .ai-testimonial-card-{{ ai_gen_id }} {
+      flex: 0 0 calc(100vw - 12px);
+      max-width: calc(100vw - 12px);
+      min-width: 220px;
+      padding: 14px;
+      min-height: 110px;
+      box-sizing: border-box;
+    }
+
+    .ai-testimonial-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.6 }}px;
+    }
+
+    .ai-testimonial-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.75 }}px;
+    }
+
+    .ai-testimonial-text-{{ ai_gen_id }} {
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .ai-testimonial-name-{{ ai_gen_id }} {
+      font-size: 11px;
+    }
+
+    .ai-testimonial-verified-{{ ai_gen_id }} {
+      font-size: 9px;
       padding: 2px 4px;
     }
   }
@@ -551,7 +599,7 @@
       getCardsPerView() {
         if (window.innerWidth >= 1200) return 4;
         if (window.innerWidth >= 769) return 3;
-        if (window.innerWidth >= 480) return 1;
+        if (window.innerWidth >= 481) return 2;
         return 1;
       }
 
@@ -675,25 +723,23 @@
 
         // For mobile, use simpler translation to prevent overflow
         if (window.innerWidth <= 768) {
-          // Calculate safe translate position
+          // Calculate safe translate position - ensure we never go beyond bounds
           const translateX = this.highlightIndex * cardWidthWithGap;
-          // Ensure we never translate past the last card
-          const maxSafeTranslate = Math.max(0, trackWidth - wrapperWidth + 20);
-          const finalTranslate = Math.min(translateX, maxSafeTranslate);
 
-          // Apply translation with safety check
-          if (finalTranslate >= 0) {
-            this.track.style.transform = `translateX(${-finalTranslate}px)`;
-          } else {
-            this.track.style.transform = 'translateX(0)';
-          }
+          // Calculate the maximum safe translation (ensure last card is visible)
+          const minTranslate = 0;
+          const maxTranslate = Math.max(0, trackWidth - wrapperWidth);
+
+          // Clamp the translation to safe bounds
+          const safeTranslate = Math.max(minTranslate, Math.min(translateX, maxTranslate));
+
+          this.track.style.transform = `translateX(${-safeTranslate}px)`;
         } else {
-          // compute center of the highlight card for desktop
+          // Desktop: center the highlighted card
           const centerOfCard = (this.highlightIndex * cardWidthWithGap) + (cardWidth / 2);
           const desiredTranslate = centerOfCard - (wrapperWidth / 2);
           const maxTranslate = Math.max(0, trackWidth - wrapperWidth);
           const finalTranslate = Math.max(0, Math.min(desiredTranslate, maxTranslate));
-          // apply translate (negate to move track left)
           this.track.style.transform = `translateX(${-finalTranslate}px)`;
         }
 
