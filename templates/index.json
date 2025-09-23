@@ -827,9 +827,9 @@
         "ai_gen_block_5f3d450_FUGzpe": {
           "type": "ai_gen_block_5f3d450",
           "settings": {
-            "heading": "Join 1,000,000+ Customers Who Love Our Brand",
+            "heading": "What Our Happy Customers Are Saying",
             "subtitle": "See what our customers are saying about us",
-            "show_header_stars": true,
+            "show_header_stars": false,
             "star_rating": 5,
             "heading_size": 36,
             "subtitle_size": 16,
@@ -853,7 +853,7 @@
             "testimonial_6_text": "Best purchase I've made this year. Highly satisfied!",
             "testimonial_6_name": "David R.",
             "testimonial_6_verified": true,
-            "show_trustpilot": true,
+            "show_trustpilot": false,
             "trustpilot_rating": 4,
             "review_count": "10,000",
             "trustpilot_link": "",
