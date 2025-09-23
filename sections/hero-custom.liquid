@@ -95,7 +95,7 @@
     overflow: hidden;
   }
 
-  /* Default mobile background */
+  /* Base background styles */
   .hero-custom__background {
     position: absolute;
     top: 0;
@@ -106,16 +106,28 @@
     background-position: center;
     background-repeat: no-repeat;
     z-index: -1;
-    {% if has_mobile_image %}
-      background-image: url('{{ section.settings.mobile_image | image_url: width: 750 }}');
-    {% elsif has_desktop_image %}
-      background-image: url('{{ section.settings.desktop_image | image_url: width: 750 }}');
-    {% else %}
-      background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    {% endif %}
+    /* Default fallback */
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   }
 
-  /* Desktop background - higher specificity to override mobile */
+  /* Mobile styles (default - up to 767px) */
+  @media (max-width: 767px) {
+    .hero-custom__background {
+      {% if has_mobile_image %}
+        background-image: url('{{ section.settings.mobile_image | image_url: width: 750 }}');
+      {% elsif has_desktop_image %}
+        background-image: url('{{ section.settings.desktop_image | image_url: width: 750 }}');
+      {% else %}
+        background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      {% endif %}
+    }
+
+    .hero-custom {
+      padding: {{ padding_mobile }};
+    }
+  }
+
+  /* Desktop styles (768px and up) */
   @media (min-width: 768px) {
     .hero-custom__background {
       {% if has_desktop_image %}
@@ -123,17 +135,10 @@
       {% else %}
         background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       {% endif %}
-      background-size: contain;
     }
 
     .hero-custom {
       padding: {{ padding_desktop }};
-    }
-  }
-
-  @media (max-width: 767px) {
-    .hero-custom {
-      padding: {{ padding_mobile }};
     }
   }
 
@@ -317,6 +322,7 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
+    background-image: url('{{ section.settings.desktop_image | image_url: width: 1920 }}');
     filter: var(--blurred-reflection-filter-blur);
     opacity: var(--reflection-opacity);
     transform: var(--blurred-reflection-scale);
