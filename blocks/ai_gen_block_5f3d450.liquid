@@ -10,6 +10,8 @@
     color: {{ block.settings.text_color }};
     overflow: hidden;
     position: relative;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .ai-testimonial-container-{{ ai_gen_id }} {
@@ -49,6 +51,7 @@
     overflow: hidden;
     width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
   }
 
   .ai-testimonial-carousel-track-{{ ai_gen_id }} {
@@ -221,20 +224,24 @@
 
   @media (max-width: 768px) {
     .ai-testimonial-carousel-{{ ai_gen_id }} {
-      padding: 40px 10px;
+      padding: 40px 15px;
+      overflow-x: hidden;
+      overflow-y: visible;
     }
 
     .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-      padding: 0 20px;
+      padding: 0;
       gap: 15px;
+      margin: 0 10px;
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100% - 40px);
+      flex: 0 0 85vw;
       max-width: 320px;
       min-width: 260px;
       padding: 20px;
       min-height: 140px;
+      box-sizing: border-box;
     }
 
     .ai-testimonial-nav-{{ ai_gen_id }} {
@@ -276,20 +283,24 @@
 
   @media (max-width: 480px) {
     .ai-testimonial-carousel-{{ ai_gen_id }} {
-      padding: 30px 5px;
+      padding: 30px 10px;
+      overflow-x: hidden;
+      overflow-y: visible;
     }
 
     .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-      padding: 0 15px;
+      padding: 0;
       gap: 12px;
+      margin: 0 5px;
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100% - 30px);
+      flex: 0 0 calc(100vw - 40px);
       max-width: 300px;
       min-width: 240px;
       padding: 16px;
       min-height: 120px;
+      box-sizing: border-box;
     }
 
     .ai-testimonial-heading-{{ ai_gen_id }} {
@@ -479,7 +490,7 @@
       getCardsPerView() {
         if (window.innerWidth >= 1200) return 4;
         if (window.innerWidth >= 769) return 3;
-        if (window.innerWidth >= 480) return 2;
+        if (window.innerWidth >= 480) return 1;
         return 1;
       }
 
@@ -596,22 +607,30 @@
         const cardWidthWithGap = cardWidth + this.gap;
         const wrapper = this.track.parentElement;
         const wrapperWidth = wrapper.offsetWidth;
+        const trackWidth = this.cards.length * cardWidthWithGap - this.gap;
 
         // ensure currentIndex is in range (it should be because syncCurrentIndexToHighlight clamps)
         this.currentIndex = Math.max(0, Math.min(this.currentIndex, this.maxIndex));
 
         // For mobile, use simpler translation to prevent overflow
         if (window.innerWidth <= 768) {
-          // Simple card-by-card translation for mobile
+          // Calculate safe translate position
           const translateX = this.highlightIndex * cardWidthWithGap;
-          const maxTranslate = Math.max(0, (this.cards.length * cardWidthWithGap) - wrapperWidth);
-          const finalTranslate = Math.min(translateX, maxTranslate);
-          this.track.style.transform = `translateX(${-finalTranslate}px)`;
+          // Ensure we never translate past the last card
+          const maxSafeTranslate = Math.max(0, trackWidth - wrapperWidth + 20);
+          const finalTranslate = Math.min(translateX, maxSafeTranslate);
+
+          // Apply translation with safety check
+          if (finalTranslate >= 0) {
+            this.track.style.transform = `translateX(${-finalTranslate}px)`;
+          } else {
+            this.track.style.transform = 'translateX(0)';
+          }
         } else {
           // compute center of the highlight card for desktop
           const centerOfCard = (this.highlightIndex * cardWidthWithGap) + (cardWidth / 2);
           const desiredTranslate = centerOfCard - (wrapperWidth / 2);
-          const maxTranslate = Math.max(0, (this.cards.length * cardWidthWithGap) - wrapperWidth + 50);
+          const maxTranslate = Math.max(0, trackWidth - wrapperWidth);
           const finalTranslate = Math.max(0, Math.min(desiredTranslate, maxTranslate));
           // apply translate (negate to move track left)
           this.track.style.transform = `translateX(${-finalTranslate}px)`;
