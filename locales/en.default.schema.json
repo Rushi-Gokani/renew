@@ -92,11 +92,13 @@
     "mobile_image": "Mobile image",
     "mobile_image_position": "Mobile image position",
     "mobile_image_fit": "Mobile image fit",
+    "mobile_fullscreen": "Mobile fullscreen image",
     // Section header for navigation menu settings in theme editor
     "menu": "Menu",
     "mobile_column_optimization": "Columns will automatically optimize for mobile",
     "mobile_layout": "Mobile layout",
     "mobile_media_override": "Override desktop media settings for mobile devices",
+    "mobile_fullscreen_info": "Makes the mobile image cover the entire screen height and width",
     "mobile_size": "Mobile size",
     "mobile_width": "Mobile width",
     "padding": "Padding",

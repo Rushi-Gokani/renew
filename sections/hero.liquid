@@ -418,17 +418,62 @@
     object-position: center center;
   }
 
-  /* Default mobile image position */
+  /* Mobile image covers full section when enabled */
   @media (max-width: 749px) {
+    {%- if section.settings.mobile_fullscreen -%}
+    .hero__image-wrapper img {
+      width: 100vw !important;
+      height: 100vh !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: -1 !important;
+    }
+
+    .hero__media-wrapper {
+      height: 100vh !important;
+      min-height: 100vh !important;
+    }
+
+    .hero__container {
+      height: 100vh !important;
+      min-height: 100vh !important;
+    }
+    {%- else -%}
     .hero__image-wrapper img {
       object-position: {{ section.settings.mobile_image_position | default: 'center center' }};
       object-fit: {{ section.settings.mobile_image_fit | default: 'cover' }};
     }
+    {%- endif -%}
+  }
 
+    {%- if section.settings.mobile_fullscreen -%}
+    /* Fullscreen mobile image */
+    .hero__media-wrapper {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero__image-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      overflow: hidden;
+    }
+    {%- else -%}
     .hero__media-wrapper:has(.hero__image-wrapper) {
       /* Ensure proper aspect ratio on mobile */
       aspect-ratio: var(--hero-media-aspect-ratio, 4/3);
     }
+
+    .hero__image-wrapper {
+      /* Standard mobile image positioning */
+      position: relative;
+    }
+    {%- endif -%}
 
     /* Mobile-specific image loading optimization */
     .hero__image-wrapper img[loading="lazy"] {
@@ -744,6 +789,14 @@
         }
       ],
       "default": "cover",
+      "visible_if": "{{ section.settings.mobile_media_type == 'image' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_fullscreen",
+      "label": "t:settings.mobile_fullscreen",
+      "default": true,
+      "info": "t:info.mobile_fullscreen_info",
       "visible_if": "{{ section.settings.mobile_media_type == 'image' }}"
     },
     {
