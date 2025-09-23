@@ -35,12 +35,6 @@
   style="
     --hero-padding-desktop: {{ padding_desktop }};
     --hero-padding-mobile: {{ padding_mobile }};
-    {% if has_desktop_image %}
-      --hero-bg-desktop: url('{{ section.settings.desktop_image | image_url: width: 1920 }}');
-    {% endif %}
-    {% if has_mobile_image %}
-      --hero-bg-mobile: url('{{ section.settings.mobile_image | image_url: width: 750 }}');
-    {% endif %}
   "
 >
   <div class="hero-custom__background"></div>
@@ -87,27 +81,28 @@
     background-position: center;
     background-repeat: no-repeat;
     z-index: -1;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><rect width="1" height="1" fill="%23667eea"/></svg>'); /* Fallback gradient */
   }
 
-  /* Desktop background */
+  /* Desktop background - override mobile background */
   @media (min-width: 768px) {
     .hero-custom__background {
-      background-image: var(--hero-bg-desktop, none);
+      background-image: {% if has_desktop_image %}url('{{ section.settings.desktop_image | image_url: width: 1920 }}'){% else %}url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><rect width="1" height="1" fill="%23667eea"/></svg>'){% endif %};
     }
 
     .hero-custom {
-      padding: var(--hero-padding-desktop);
+      padding: {{ padding_desktop }};
     }
   }
 
-  /* Mobile background */
-  @media (max-width: 767px) {
-    .hero-custom__background {
-      background-image: var(--hero-bg-mobile, var(--hero-bg-desktop, none));
-    }
+  /* Mobile background - default background */
+  .hero-custom__background {
+    background-image: {% if has_mobile_image %}url('{{ section.settings.mobile_image | image_url: width: 750 }}'){% elsif has_desktop_image %}url('{{ section.settings.desktop_image | image_url: width: 750 }}'){% else %}url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><rect width="1" height="1" fill="%23764ba2"/></svg>'){% endif %};
+  }
 
+  @media (max-width: 767px) {
     .hero-custom {
-      padding: var(--hero-padding-mobile);
+      padding: {{ padding_mobile }};
     }
   }
 
@@ -213,10 +208,6 @@
     }
   }
 
-  /* Fallback background when no image is set */
-  .hero-custom__background:not([style*="background-image"]) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  }
 </style>
 
 {% schema %}
