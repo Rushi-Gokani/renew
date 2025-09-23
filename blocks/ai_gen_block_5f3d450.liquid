@@ -59,6 +59,8 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
   }
 
   .ai-testimonial-carousel-track-{{ ai_gen_id }} {
@@ -99,9 +101,11 @@
 
   .ai-testimonial-card-{{ ai_gen_id }}.active {
     opacity: 1;
-    transform: scale(1);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    transform: scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
     border-color: {{ block.settings.highlight_border_color }};
+    z-index: 10;
+    position: relative;
   }
 
   .ai-testimonial-text-{{ ai_gen_id }} {
@@ -257,6 +261,11 @@
       flex-shrink: 0;
     }
 
+    .ai-testimonial-card-{{ ai_gen_id }}.active {
+      transform: scale(1.03);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+    }
+
     .ai-testimonial-carousel-{{ ai_gen_id }} {
       padding: 40px 6px;
       overflow-x: hidden;
@@ -280,12 +289,13 @@
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 12px);
-      max-width: calc(100vw - 12px);
-      min-width: 220px;
-      padding: 14px;
-      min-height: 110px;
+      flex: 0 0 calc(100vw - 40px);
+      max-width: calc(100vw - 40px);
+      min-width: 280px;
+      padding: 18px;
+      min-height: 130px;
       box-sizing: border-box;
+      margin: 0 auto;
     }
 
     .ai-testimonial-nav-{{ ai_gen_id }} {
@@ -329,10 +339,10 @@
 
   @media (min-width: 481px) and (max-width: 768px) {
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(50vw - 20px);
-      min-width: 240px;
-      max-width: calc(50vw - 20px);
-      min-height: 140px;
+      flex: 0 0 calc(50vw - 30px);
+      min-width: 280px;
+      max-width: calc(50vw - 30px);
+      min-height: 150px;
     }
   }
 
@@ -344,6 +354,11 @@
       overflow-y: visible;
       box-sizing: border-box;
       max-width: 100%;
+    }
+
+    .ai-testimonial-card-{{ ai_gen_id }}.active {
+      transform: scale(1.04);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
     }
 
     .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
@@ -361,12 +376,13 @@
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 8px);
-      max-width: calc(100vw - 8px);
-      min-width: 200px;
-      padding: 12px;
-      min-height: 100px;
+      flex: 0 0 calc(100vw - 30px);
+      max-width: calc(100vw - 30px);
+      min-width: 240px;
+      padding: 16px;
+      min-height: 120px;
       box-sizing: border-box;
+      margin: 0 auto;
     }
 
     .ai-testimonial-heading-{{ ai_gen_id }} {
@@ -416,12 +432,13 @@
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 4px);
-      max-width: calc(100vw - 4px);
-      min-width: 180px;
-      padding: 10px;
-      min-height: 90px;
+      flex: 0 0 calc(100vw - 20px);
+      max-width: calc(100vw - 20px);
+      min-width: 200px;
+      padding: 12px;
+      min-height: 100px;
       box-sizing: border-box;
+      margin: 0 auto;
     }
 
     .ai-testimonial-heading-{{ ai_gen_id }} {
@@ -454,24 +471,24 @@
   }
 
   .ai-testimonial-carousel-{{ ai_gen_id }} .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-    max-width: calc(100vw - 4px) !important;
+    max-width: calc(100vw - 8px) !important;
   }
 
   @media (max-width: 768px) {
     .ai-testimonial-carousel-{{ ai_gen_id }} .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-      max-width: calc(100vw - 8px) !important;
+      max-width: calc(100vw - 16px) !important;
     }
   }
 
   @media (max-width: 480px) {
     .ai-testimonial-carousel-{{ ai_gen_id }} .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-      max-width: calc(100vw - 6px) !important;
+      max-width: calc(100vw - 12px) !important;
     }
   }
 
   @media (max-width: 375px) {
     .ai-testimonial-carousel-{{ ai_gen_id }} .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-      max-width: calc(100vw - 4px) !important;
+      max-width: calc(100vw - 8px) !important;
     }
   }
 
@@ -667,7 +684,7 @@
       getCardsPerView() {
         if (window.innerWidth >= 1200) return 4;
         if (window.innerWidth >= 769) return 3;
-        if (window.innerWidth >= 481) return 2;
+        if (window.innerWidth >= 481) return 1; // Single card for better centering on mobile
         return 1;
       }
 
@@ -789,23 +806,22 @@
         // ensure currentIndex is in range (it should be because syncCurrentIndexToHighlight clamps)
         this.currentIndex = Math.max(0, Math.min(this.currentIndex, this.maxIndex));
 
-        // For mobile, use ultra-conservative translation to absolutely prevent overflow
+        // For mobile, center the active card perfectly
         if (window.innerWidth <= 768) {
-          // Calculate safe translate position with extra safety margin
-          const translateX = this.highlightIndex * cardWidthWithGap;
+          // Calculate position to center the active card
+          const centerOfCard = (this.highlightIndex * cardWidthWithGap) + (cardWidth / 2);
+          const desiredTranslate = centerOfCard - (wrapperWidth / 2);
 
-          // Calculate the maximum safe translation with conservative safety margin
+          // Calculate safe bounds with extra safety margin
           const minTranslate = 0;
-          const safetyMargin = 10; // Extra pixels of safety
+          const safetyMargin = 20; // Extra pixels of safety
           const maxTranslate = Math.max(0, trackWidth - wrapperWidth - safetyMargin);
 
-          // Clamp the translation to ultra-safe bounds
-          const safeTranslate = Math.max(minTranslate, Math.min(translateX, maxTranslate));
+          // Clamp the translation to safe bounds while trying to center
+          const safeTranslate = Math.max(minTranslate, Math.min(desiredTranslate, maxTranslate));
 
-          // Double-check: never allow negative translation on mobile
-          const finalSafeTranslate = Math.max(0, safeTranslate);
-
-          this.track.style.transform = `translateX(${-finalSafeTranslate}px)`;
+          // Apply centering transformation
+          this.track.style.transform = `translateX(${-safeTranslate}px)`;
         } else {
           // Desktop: center the highlighted card
           const centerOfCard = (this.highlightIndex * cardWidthWithGap) + (cardWidth / 2);
