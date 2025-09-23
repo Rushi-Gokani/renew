@@ -13,8 +13,7 @@
 
   assign has_image_1 = false
   assign has_image_2 = false
-  assign has_mobile_image_1 = false
-  assign has_mobile_image_2 = false
+  assign has_mobile_image = false
   assign has_video_1 = false
   assign has_video_2 = false
   assign has_image = false
@@ -23,16 +22,7 @@
   assign has_media = false
   assign media_type_1 = section.settings.media_type_1
   assign media_type_2 = section.settings.media_type_2
-  assign mobile_media_type_1 = section.settings.mobile_media_type_1 | default: media_type_1
-  assign mobile_media_type_2 = section.settings.mobile_media_type_2 | default: media_type_2
-
-  # Fallback to desktop images if mobile images are not set but type is image
-  if mobile_media_type_1 == 'image' and section.settings.mobile_image_1 == blank and has_image_1
-    assign has_mobile_image_1 = true
-  endif
-  if mobile_media_type_2 == 'image' and section.settings.mobile_image_2 == blank and has_image_2
-    assign has_mobile_image_2 = true
-  endif
+  assign mobile_media_type = section.settings.mobile_media_type | default: 'same_as_desktop'
 
   if section.settings.image_1 != blank and media_type_1 == 'image'
     assign has_image_1 = true
@@ -40,11 +30,8 @@
   if section.settings.image_2 != blank and media_type_2 == 'image'
     assign has_image_2 = true
   endif
-  if section.settings.mobile_image_1 != blank and mobile_media_type_1 == 'image'
-    assign has_mobile_image_1 = true
-  endif
-  if section.settings.mobile_image_2 != blank and mobile_media_type_2 == 'image'
-    assign has_mobile_image_2 = true
+  if section.settings.mobile_image != blank and mobile_media_type == 'image'
+    assign has_mobile_image = true
   endif
   if section.settings.video_1 != blank and media_type_1 == 'video'
     assign has_video_1 = true
@@ -53,7 +40,7 @@
     assign has_video_2 = true
   endif
 
-  if has_image_1 or has_image_2 or has_mobile_image_1 or has_mobile_image_2
+  if has_image_1 or has_image_2 or has_mobile_image
     assign has_image = true
   endif
   if has_video_1 or has_video_2
@@ -146,10 +133,10 @@
     {% assign media_count = media_count | plus: 1 %}
     <picture class="hero__image-wrapper">
       <!-- Mobile image -->
-      {%- if has_mobile_image_2 -%}
+      {%- if has_mobile_image -%}
         <source
           media="(max-width: 749px)"
-          srcset="{%- if section.settings.mobile_image_2 != blank -%}{{ section.settings.mobile_image_2 | image_url: width: 832 }}{{ 832 | append: 'w' }}{{ ', ' }}{{ section.settings.mobile_image_2 | image_url: width: 1200 }}{{ 1200 | append: 'w' }}{{ ', ' }}{{ section.settings.mobile_image_2 | image_url: width: 1600 }}{{ 1600 | append: 'w' }}{%- else -%}{{ section.settings.image_2 | image_url: width: 832 }}{{ 832 | append: 'w' }}{{ ', ' }}{{ section.settings.image_2 | image_url: width: 1200 }}{{ 1200 | append: 'w' }}{{ ', ' }}{{ section.settings.image_2 | image_url: width: 1600 }}{{ 1600 | append: 'w' }}{%- endif -%}"
+          srcset="{%- if section.settings.mobile_image != blank -%}{{ section.settings.mobile_image | image_url: width: 832 }}{{ 832 | append: 'w' }}{{ ', ' }}{{ section.settings.mobile_image | image_url: width: 1200 }}{{ 1200 | append: 'w' }}{{ ', ' }}{{ section.settings.mobile_image | image_url: width: 1600 }}{{ 1600 | append: 'w' }}{%- else -%}{{ section.settings.image_1 | image_url: width: 832 }}{{ 832 | append: 'w' }}{{ ', ' }}{{ section.settings.image_1 | image_url: width: 1200 }}{{ 1200 | append: 'w' }}{{ ', ' }}{{ section.settings.image_1 | image_url: width: 1600 }}{{ 1600 | append: 'w' }}{%- endif -%}"
           sizes="100vw"
         >
       {%- endif -%}
@@ -229,10 +216,10 @@
   {% if has_image_2 %}
     <picture class="hero__image-wrapper">
       <!-- Mobile image for blurred background -->
-      {%- if has_mobile_image_2 -%}
+      {%- if has_mobile_image -%}
         <source
           media="(max-width: 749px)"
-          srcset="{%- if section.settings.mobile_image_2 != blank -%}{{ section.settings.mobile_image_2 | image_url: width: 832 }}{{ 832 | append: 'w' }}{{ ', ' }}{{ section.settings.mobile_image_2 | image_url: width: 1200 }}{{ 1200 | append: 'w' }}{{ ', ' }}{{ section.settings.mobile_image_2 | image_url: width: 1600 }}{{ 1600 | append: 'w' }}{%- else -%}{{ section.settings.image_2 | image_url: width: 832 }}{{ 832 | append: 'w' }}{{ ', ' }}{{ section.settings.image_2 | image_url: width: 1200 }}{{ 1200 | append: 'w' }}{{ ', ' }}{{ section.settings.image_2 | image_url: width: 1600 }}{{ 1600 | append: 'w' }}{%- endif -%}"
+          srcset="{%- if section.settings.mobile_image != blank -%}{{ section.settings.mobile_image | image_url: width: 832 }}{{ 832 | append: 'w' }}{{ ', ' }}{{ section.settings.mobile_image | image_url: width: 1200 }}{{ 1200 | append: 'w' }}{{ ', ' }}{{ section.settings.mobile_image | image_url: width: 1600 }}{{ 1600 | append: 'w' }}{%- else -%}{{ section.settings.image_1 | image_url: width: 832 }}{{ 832 | append: 'w' }}{{ ', ' }}{{ section.settings.image_1 | image_url: width: 1200 }}{{ 1200 | append: 'w' }}{{ ', ' }}{{ section.settings.image_1 | image_url: width: 1600 }}{{ 1600 | append: 'w' }}{%- endif -%}"
           sizes="100vw"
         >
       {%- endif -%}
@@ -431,11 +418,11 @@
     object-position: center center;
   }
 
-  /* Mobile-specific image optimizations */
+  /* Default mobile image position */
   @media (max-width: 749px) {
     .hero__image-wrapper img {
-      object-fit: cover;
-      object-position: center center;
+      object-position: {{ section.settings.mobile_image_position | default: 'center center' }};
+      object-fit: {{ section.settings.mobile_image_fit | default: 'cover' }};
     }
 
     .hero__media-wrapper:has(.hero__image-wrapper) {
@@ -457,27 +444,15 @@
 
   /* Apply mobile-specific image positioning and fit */
   @media (max-width: 749px) {
-    {%- if section.settings.mobile_image_position_1 != 'center center' -%}
-    .hero__image-wrapper:nth-child(1) img {
-      object-position: {{ section.settings.mobile_image_position_1 }};
+    {%- if section.settings.mobile_image_position != 'center center' -%}
+    .hero__image-wrapper img {
+      object-position: {{ section.settings.mobile_image_position }};
     }
     {%- endif -%}
 
-    {%- if section.settings.mobile_image_fit_1 != 'cover' -%}
-    .hero__image-wrapper:nth-child(1) img {
-      object-fit: {{ section.settings.mobile_image_fit_1 }};
-    }
-    {%- endif -%}
-
-    {%- if section.settings.mobile_image_position_2 != 'center center' -%}
-    .hero__image-wrapper:nth-child(2) img {
-      object-position: {{ section.settings.mobile_image_position_2 }};
-    }
-    {%- endif -%}
-
-    {%- if section.settings.mobile_image_fit_2 != 'cover' -%}
-    .hero__image-wrapper:nth-child(2) img {
-      object-fit: {{ section.settings.mobile_image_fit_2 }};
+    {%- if section.settings.mobile_image_fit != 'cover' -%}
+    .hero__image-wrapper img {
+      object-fit: {{ section.settings.mobile_image_fit }};
     }
     {%- endif -%}
   }
@@ -640,7 +615,7 @@
     },
     {
       "type": "select",
-      "id": "mobile_media_type_1",
+      "id": "mobile_media_type",
       "label": "t:settings.mobile_media_type",
       "options": [
         {
@@ -661,9 +636,9 @@
     },
     {
       "type": "image_picker",
-      "id": "mobile_image_1",
+      "id": "mobile_image",
       "label": "t:settings.mobile_image",
-      "visible_if": "{{ section.settings.mobile_media_type_1 == 'image' }}"
+      "visible_if": "{{ section.settings.mobile_media_type == 'image' }}"
     },
     {
       "type": "header",
@@ -699,43 +674,12 @@
     },
     {
       "type": "header",
-      "content": "t:content.mobile_media_2"
-    },
-    {
-      "type": "select",
-      "id": "mobile_media_type_2",
-      "label": "t:settings.mobile_media_type",
-      "options": [
-        {
-          "value": "image",
-          "label": "t:options.image"
-        },
-        {
-          "value": "video",
-          "label": "t:options.video"
-        },
-        {
-          "value": "same_as_desktop",
-          "label": "t:options.same_as_desktop"
-        }
-      ],
-      "default": "same_as_desktop",
-      "info": "t:info.mobile_media_override"
-    },
-    {
-      "type": "image_picker",
-      "id": "mobile_image_2",
-      "label": "t:settings.mobile_image",
-      "visible_if": "{{ section.settings.mobile_media_type_2 == 'image' }}"
-    },
-    {
-      "type": "header",
       "content": "t:content.mobile_customization"
     },
     {
       "type": "select",
-      "id": "mobile_image_position_1",
-      "label": "t:settings.mobile_image_position_1",
+      "id": "mobile_image_position",
+      "label": "t:settings.mobile_image_position",
       "options": [
         {
           "value": "center center",
@@ -775,12 +719,12 @@
         }
       ],
       "default": "center center",
-      "visible_if": "{{ section.settings.mobile_media_type_1 == 'image' }}"
+      "visible_if": "{{ section.settings.mobile_media_type == 'image' }}"
     },
     {
       "type": "select",
-      "id": "mobile_image_fit_1",
-      "label": "t:settings.mobile_image_fit_1",
+      "id": "mobile_image_fit",
+      "label": "t:settings.mobile_image_fit",
       "options": [
         {
           "value": "cover",
@@ -800,77 +744,7 @@
         }
       ],
       "default": "cover",
-      "visible_if": "{{ section.settings.mobile_media_type_1 == 'image' }}"
-    },
-    {
-      "type": "select",
-      "id": "mobile_image_position_2",
-      "label": "t:settings.mobile_image_position_2",
-      "options": [
-        {
-          "value": "center center",
-          "label": "t:options.center"
-        },
-        {
-          "value": "center top",
-          "label": "t:options.top"
-        },
-        {
-          "value": "center bottom",
-          "label": "t:options.bottom"
-        },
-        {
-          "value": "left center",
-          "label": "t:options.left"
-        },
-        {
-          "value": "right center",
-          "label": "t:options.right"
-        },
-        {
-          "value": "left top",
-          "label": "t:options.top_left"
-        },
-        {
-          "value": "right top",
-          "label": "t:options.top_right"
-        },
-        {
-          "value": "left bottom",
-          "label": "t:options.bottom_left"
-        },
-        {
-          "value": "right bottom",
-          "label": "t:options.bottom_right"
-        }
-      ],
-      "default": "center center",
-      "visible_if": "{{ section.settings.mobile_media_type_2 == 'image' }}"
-    },
-    {
-      "type": "select",
-      "id": "mobile_image_fit_2",
-      "label": "t:settings.mobile_image_fit_2",
-      "options": [
-        {
-          "value": "cover",
-          "label": "t:options.cover"
-        },
-        {
-          "value": "contain",
-          "label": "t:options.contain"
-        },
-        {
-          "value": "fill",
-          "label": "t:options.fill"
-        },
-        {
-          "value": "scale-down",
-          "label": "t:options.scale_down"
-        }
-      ],
-      "default": "cover",
-      "visible_if": "{{ section.settings.mobile_media_type_2 == 'image' }}"
+      "visible_if": "{{ section.settings.mobile_media_type == 'image' }}"
     },
     {
       "type": "header",
