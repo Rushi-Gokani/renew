@@ -40,6 +40,8 @@
     grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
     gap: {{ block.settings.card_spacing }}px;
     margin-top: {{ block.settings.text_spacing }}px;
+    /* shared var for gap reuse in calculations */
+    --ai-card-gap: {{ block.settings.card_spacing }}px;
   }
 
   .ai-benefits-icons-row__card-{{ ai_gen_id }} {
@@ -48,6 +50,9 @@
     {% if block.settings.enable_animations %}
       transition: transform 0.3s ease;
     {% endif %}
+    /* snap for horizontal scroll on mobile */
+    scroll-snap-align: start;
+    min-width: 0;
   }
 
   {% if block.settings.enable_animations %}
@@ -114,7 +119,16 @@
 
   @media screen and (max-width: 749px) {
     .ai-benefits-icons-row__grid-{{ ai_gen_id }} {
-      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+      /* turn into a horizontal scroller on mobile */
+      grid-template-columns: unset;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(70%, 280px);
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      padding: 0 10px;
+      margin: 0 -10px; /* allow edge peeking without layout overflow */
     }
 
     .ai-benefits-icons-row__heading-{{ ai_gen_id }} {
@@ -124,6 +138,10 @@
     .ai-benefits-icons-row__subtitle-{{ ai_gen_id }} {
       font-size: calc({{ block.settings.subtitle_size }}px * 0.9);
     }
+
+    /* hide scrollbars while keeping scrollability */
+    .ai-benefits-icons-row__grid-{{ ai_gen_id }}::-webkit-scrollbar { display: none; }
+    .ai-benefits-icons-row__grid-{{ ai_gen_id }} { scrollbar-width: none; }
   }
 {% endstyle %}
 
