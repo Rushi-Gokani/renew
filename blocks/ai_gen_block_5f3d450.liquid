@@ -8,7 +8,8 @@
   .ai-testimonial-carousel-{{ ai_gen_id }} {
     padding: 60px 20px;
     color: {{ block.settings.text_color }};
-    overflow-x: hidden;
+    overflow: hidden;
+    position: relative;
   }
 
   .ai-testimonial-container-{{ ai_gen_id }} {
@@ -47,6 +48,7 @@
     margin-bottom: 40px;
     overflow: hidden;
     width: 100%;
+    max-width: 100%;
   }
 
   .ai-testimonial-carousel-track-{{ ai_gen_id }} {
@@ -55,7 +57,6 @@
     transition: transform 0.6s cubic-bezier(.2,.9,.2,1);
     padding: 0 50px;
     will-change: transform;
-    width: 100%;
   }
 
   .ai-testimonial-card-{{ ai_gen_id }} {
@@ -224,14 +225,14 @@
     }
 
     .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-      padding: 0 10px;
+      padding: 0 20px;
       gap: 15px;
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 40px);
+      flex: 0 0 calc(100% - 40px);
       max-width: 320px;
-      min-width: 280px;
+      min-width: 260px;
       padding: 20px;
       min-height: 140px;
     }
@@ -279,14 +280,14 @@
     }
 
     .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-      padding: 0 5px;
+      padding: 0 15px;
       gap: 12px;
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 20px);
+      flex: 0 0 calc(100% - 30px);
       max-width: 300px;
-      min-width: 260px;
+      min-width: 240px;
       padding: 16px;
       min-height: 120px;
     }
@@ -599,12 +600,22 @@
         // ensure currentIndex is in range (it should be because syncCurrentIndexToHighlight clamps)
         this.currentIndex = Math.max(0, Math.min(this.currentIndex, this.maxIndex));
 
-        // compute center of the highlight card
-        const centerOfCard = (this.highlightIndex * cardWidthWithGap) + (cardWidth / 2);
-        const desiredTranslate = centerOfCard - (wrapperWidth / 2);
-
-        // apply translate (negate to move track left)
-        this.track.style.transform = `translateX(${-desiredTranslate}px)`;
+        // For mobile, use simpler translation to prevent overflow
+        if (window.innerWidth <= 768) {
+          // Simple card-by-card translation for mobile
+          const translateX = this.highlightIndex * cardWidthWithGap;
+          const maxTranslate = Math.max(0, (this.cards.length * cardWidthWithGap) - wrapperWidth);
+          const finalTranslate = Math.min(translateX, maxTranslate);
+          this.track.style.transform = `translateX(${-finalTranslate}px)`;
+        } else {
+          // compute center of the highlight card for desktop
+          const centerOfCard = (this.highlightIndex * cardWidthWithGap) + (cardWidth / 2);
+          const desiredTranslate = centerOfCard - (wrapperWidth / 2);
+          const maxTranslate = Math.max(0, (this.cards.length * cardWidthWithGap) - wrapperWidth + 50);
+          const finalTranslate = Math.max(0, Math.min(desiredTranslate, maxTranslate));
+          // apply translate (negate to move track left)
+          this.track.style.transform = `translateX(${-finalTranslate}px)`;
+        }
 
         // ensure indicators and active classes correct
         this.updateActiveCard();
