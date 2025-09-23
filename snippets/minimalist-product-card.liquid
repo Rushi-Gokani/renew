@@ -1,0 +1,315 @@
+{%- doc -%}
+  This snippet renders a minimalist product card with clean design.
+  It features a simplified layout with image, title, brand, price and add to cart button.
+
+  @param {object} product - The product object
+  @param {object} block - The block object (optional)
+  @param {string} [image_aspect_ratio] - The aspect ratio for the product image
+{%- enddoc -%}
+
+{% liquid
+  assign block_settings = block.settings | default: settings
+  assign image_aspect_ratio = image_aspect_ratio | default: '1/1'
+
+  # Get the first available variant for pricing
+  assign current_variant = product.selected_or_first_available_variant
+
+  assign onboarding = false
+  if product.id == empty or product == blank
+    assign onboarding = true
+  endif
+%}
+
+<minimalist-product-card
+  class="minimalist-product-card"
+  data-product-id="{{ product.id }}"
+  data-product-variants-size="{{ product.variants.size }}"
+  {{ block.shopify_attributes }}
+  {% if onboarding %}
+    data-placeholder="true"
+  {% endif %}
+>
+  <a
+    {% unless onboarding %}
+      href="{{ current_variant.url }}"
+    {% endunless %}
+    class="minimalist-product-card__link"
+    ref="productCardLink"
+    aria-label="{{ product.title }}"
+  >
+    <div class="minimalist-product-card__image-container">
+      {% if product.featured_media %}
+        {% liquid
+          assign image_url = product.featured_media.preview_image | image_url: width: 600
+          assign image_alt = product.featured_media.alt | escape
+        %}
+        <img
+          src="{{ image_url }}"
+          alt="{{ image_alt }}"
+          class="minimalist-product-card__image"
+          ref="productImage"
+          loading="lazy"
+          width="{{ product.featured_media.preview_image.width }}"
+          height="{{ product.featured_media.preview_image.height }}"
+        >
+      {% else %}
+        <div class="minimalist-product-card__placeholder">
+          {{ 'product-1' | placeholder_svg_tag: 'minimalist-product-card__placeholder-image' }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="minimalist-product-card__content">
+      <div class="minimalist-product-card__header">
+        <h3 class="minimalist-product-card__title">
+          {{ product.title }}
+        </h3>
+        {% if product.vendor %}
+          <span class="minimalist-product-card__brand">
+            {{ product.vendor }}
+          </span>
+        {% endif %}
+      </div>
+
+      <div class="minimalist-product-card__footer">
+        <div class="minimalist-product-card__price">
+          <product-price
+            {% unless onboarding %}
+              data-variant-id="{{ current_variant.id }}"
+            {% endunless %}
+          >
+            <div class="price">
+              {% if current_variant.compare_at_price %}
+                <span class="price__compare">
+                  {{ current_variant.compare_at_price | money }}
+                </span>
+              {% endif %}
+
+              <span class="price__sale">
+                {% if current_variant.price < current_variant.compare_at_price %}
+                  {{ current_variant.price | money }}
+                {% else %}
+                  {{ current_variant.price | money }}
+                {% endif %}
+              </span>
+            </div>
+          </product-price>
+        </div>
+
+        {% unless onboarding %}
+          <div class="minimalist-product-card__actions">
+            {% if product.available %}
+              <button
+                type="submit"
+                class="minimalist-product-card__add-btn"
+                form="product-form-{{ product.id }}"
+                data-add-to-cart
+                aria-label="Add {{ product.title }} to cart"
+              >
+                <span>Add to Cart</span>
+              </button>
+            {% else %}
+              <button
+                type="button"
+                class="minimalist-product-card__sold-out"
+                disabled
+              >
+                <span>Sold Out</span>
+              </button>
+            {% endif %}
+          </div>
+        {% endunless %}
+      </div>
+    </div>
+  </a>
+</minimalist-product-card>
+
+{% stylesheet %}
+  .minimalist-product-card {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+
+  .minimalist-product-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .minimalist-product-card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .minimalist-product-card__image-container {
+    aspect-ratio: {{ image_aspect_ratio }};
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .minimalist-product-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .minimalist-product-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+  }
+
+  .minimalist-product-card__placeholder-image {
+    width: 50%;
+    height: 50%;
+    color: #ccc;
+  }
+
+  .minimalist-product-card__content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 12px;
+  }
+
+  .minimalist-product-card__header {
+    flex-grow: 1;
+  }
+
+  .minimalist-product-card__title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0 0 6px 0;
+    color: #1a1a1a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .minimalist-product-card__brand {
+    font-size: 14px;
+    color: #666;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .minimalist-product-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+  }
+
+  .minimalist-product-card__price {
+    flex-shrink: 0;
+  }
+
+  .minimalist-product-card__price .price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .minimalist-product-card__price .price__compare {
+    font-size: 14px;
+    color: #999;
+    text-decoration: line-through;
+  }
+
+  .minimalist-product-card__price .price__sale {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  .minimalist-product-card__actions {
+    flex-shrink: 0;
+  }
+
+  .minimalist-product-card__add-btn {
+    background: #1a1a1a;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .minimalist-product-card__add-btn:hover {
+    background: #333;
+    transform: translateY(-1px);
+  }
+
+  .minimalist-product-card__sold-out {
+    background: #f5f5f5;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: not-allowed;
+    white-space: nowrap;
+  }
+
+  /* Responsive adjustments */
+  @media screen and (max-width: 768px) {
+    .minimalist-product-card__content {
+      padding: 16px;
+      gap: 10px;
+    }
+
+    .minimalist-product-card__title {
+      font-size: 14px;
+    }
+
+    .minimalist-product-card__brand {
+      font-size: 12px;
+    }
+
+    .minimalist-product-card__price .price__sale {
+      font-size: 14px;
+    }
+
+    .minimalist-product-card__add-btn,
+    .minimalist-product-card__sold-out {
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+
+    .minimalist-product-card__footer {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+  }
+
+  /* Loading state */
+  .minimalist-product-card[data-placeholder="true"] {
+    pointer-events: none;
+  }
+
+  .minimalist-product-card[data-placeholder="true"] .minimalist-product-card__image {
+    opacity: 0.5;
+  }
+{% endstylesheet %}
