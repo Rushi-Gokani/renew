@@ -15,6 +15,49 @@
   style="--padding-block-start: {{ section.settings.padding-block-start }}px; --padding-block-end: {{ section.settings.padding-block-end }}px;"
   section-id="{{ section.id }}"
 >
+  {% if section.settings.show_toolbar %}
+    <div class="collection-browser__toolbar">
+      {% if section.settings.show_primary_toggle %}
+        {% assign toggle_active = false %}
+        {% if request.query['filter.p.tag'] contains section.settings.primary_toggle_tag %}
+          {% assign toggle_active = true %}
+        {% endif %}
+        <a
+          class="cb-toggle {% if toggle_active %}is-active{% endif %}"
+          href="{{ selected_collection.url | append: '?filter.p.tag=' | append: section.settings.primary_toggle_tag }}"
+        >
+          <span class="cb-toggle__switch" aria-hidden="true"></span>
+          <span class="cb-toggle__label">{{ section.settings.primary_toggle_label }}</span>
+        </a>
+      {% endif %}
+
+      <div class="cb-chips">
+        {% for i in (1..6) %}
+          {% assign label = section.settings["chip_" | append: i | append: "_label"] %}
+          {% assign type = section.settings["chip_" | append: i | append: "_type"] %}
+          {% assign value = section.settings["chip_" | append: i | append: "_value"] %}
+          {% if label and value %}
+            {% liquid
+              assign qp = ''
+              case type
+                when 'tag'
+                  assign qp = 'filter.p.tag='
+                when 'product_type'
+                  assign qp = 'filter.p.product_type='
+                when 'vendor'
+                  assign qp = 'filter.p.vendor='
+              endcase
+              assign href = selected_collection.url | append: '?' | append: qp | append: value
+              assign is_active = request.query[qp | split: '=' | first] == value or request.query['filter.p.tag'] contains value
+            %}
+            <a class="cb-chip {% if is_active %}is-active{% endif %}" href="{{ href }}">
+              {{- label -}}
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
   {% render 'skip-to-content-link', href: '#ResultsList', text: 'accessibility.skip_to_results_list' %}
 
   <div
@@ -55,6 +98,72 @@
 </results-list>
 
 {% stylesheet %}
+  .collection-browser__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-block-end: 16px;
+    padding-inline: var(--page-margin);
+  }
+
+  .cb-toggle {
+    --toggle-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--color-background-secondary);
+    border-radius: 999px;
+    padding: 4px 12px 4px 6px;
+    text-decoration: none;
+    color: var(--color-foreground);
+  }
+
+  .cb-toggle__switch {
+    width: var(--toggle-height);
+    height: var(--toggle-height);
+    border-radius: 999px;
+    background: var(--color-border);
+    position: relative;
+  }
+
+  .cb-toggle__switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: calc(var(--toggle-height) - 6px);
+    height: calc(var(--toggle-height) - 6px);
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 15%);
+    transition: transform var(--animation-speed-fast) ease;
+  }
+
+  .cb-toggle.is-active {
+    background: var(--color-accent-subdued);
+  }
+
+  .cb-toggle.is-active .cb-toggle__switch::after {
+    transform: translateX(100%);
+  }
+
+  .cb-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: var(--color-background-secondary);
+    color: var(--color-foreground);
+    text-decoration: none;
+    border: 1px solid var(--color-border-subdued);
+  }
+
+  .cb-chip.is-active {
+    background: var(--color-accent-subdued);
+    border-color: transparent;
+  }
+
   .collection-wrapper {
     @media screen and (min-width: 750px) {
       grid-template-columns:
@@ -77,6 +186,130 @@
       "id": "collection",
       "label": "Collection"
     },
+    {
+      "type": "checkbox",
+      "id": "show_toolbar",
+      "label": "Show toolbar (toggle + chips)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_primary_toggle",
+      "label": "Show primary toggle",
+      "default": true,
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "text",
+      "id": "primary_toggle_label",
+      "label": "Primary toggle label",
+      "default": "Subscribe & Save 20%",
+      "visible_if": "{{ section.settings.show_toolbar and section.settings.show_primary_toggle }}"
+    },
+    {
+      "type": "text",
+      "id": "primary_toggle_tag",
+      "label": "Primary toggle product tag",
+      "info": "Tag to filter by when toggle is active",
+      "default": "Subscription",
+      "visible_if": "{{ section.settings.show_toolbar and section.settings.show_primary_toggle }}"
+    },
+    {
+      "type": "header",
+      "content": "Quick filter chips",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Each chip links to a filter query. Make sure your filters are enabled in Storefront filtering for best results.",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "text",
+      "id": "chip_1_label",
+      "label": "Chip 1 label",
+      "default": "Bundle & Save",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "select",
+      "id": "chip_1_type",
+      "label": "Chip 1 filter type",
+      "options": [
+        { "value": "tag", "label": "Tag" },
+        { "value": "product_type", "label": "Product type" },
+        { "value": "vendor", "label": "Vendor" }
+      ],
+      "default": "tag",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "text",
+      "id": "chip_1_value",
+      "label": "Chip 1 value",
+      "default": "Bundle",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "text",
+      "id": "chip_2_label",
+      "label": "Chip 2 label",
+      "default": "Best Sellers",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "select",
+      "id": "chip_2_type",
+      "label": "Chip 2 filter type",
+      "options": [
+        { "value": "tag", "label": "Tag" },
+        { "value": "product_type", "label": "Product type" },
+        { "value": "vendor", "label": "Vendor" }
+      ],
+      "default": "tag",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "text",
+      "id": "chip_2_value",
+      "label": "Chip 2 value",
+      "default": "Best Seller",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "text",
+      "id": "chip_3_label",
+      "label": "Chip 3 label",
+      "default": "Rheal x Vita Coco Bundles",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "select",
+      "id": "chip_3_type",
+      "label": "Chip 3 filter type",
+      "options": [
+        { "value": "tag", "label": "Tag" },
+        { "value": "product_type", "label": "Product type" },
+        { "value": "vendor", "label": "Vendor" }
+      ],
+      "default": "tag",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "text",
+      "id": "chip_3_value",
+      "label": "Chip 3 value",
+      "default": "Vita Coco",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    {
+      "type": "text",
+      "id": "chip_4_label",
+      "label": "Chip 4 label",
+      "visible_if": "{{ section.settings.show_toolbar }}"
+    },
+    { "type": "select", "id": "chip_4_type", "label": "Chip 4 filter type", "options": [ {"value": "tag", "label": "Tag"}, {"value": "product_type", "label": "Product type"}, {"value": "vendor", "label": "Vendor"} ], "default": "tag", "visible_if": "{{ section.settings.show_toolbar }}" },
+    { "type": "text", "id": "chip_4_value", "label": "Chip 4 value", "visible_if": "{{ section.settings.show_toolbar }}" },
     {
       "type": "range",
       "id": "per_page",
