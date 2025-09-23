@@ -327,6 +327,68 @@
         "padding-block-end": 0
       }
     },
+    "blocks_CieCxC": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_0a00d21_W8r8cm": {
+          "type": "ai_gen_block_0a00d21",
+          "settings": {
+            "video": "https://cdn.shopify.com/videos/c/o/v/1689613603154ac5980db3ab850a084d.mp4",
+            "heading": "Our Superfoods Are The Renew Deal",
+            "subheading": "Discover the power of nature with our premium superfood blends, crafted for your health and wellness journey.",
+            "review_1": "Amazing taste! 🔥",
+            "review_2": "Best superfood ever! ⭐⭐⭐⭐⭐",
+            "review_3": "So healthy and delicious 💚",
+            "tiktok_url": "#",
+            "instagram_url": "#",
+            "facebook_url": "#",
+            "handle_text": "@Renew",
+            "handle_url": "#",
+            "background_color": "#00593b",
+            "text_color": "#f0f7f4",
+            "bubble_background": "#ffffff",
+            "bubble_text_color": "#000000",
+            "icon_background": "#ffffff",
+            "icon_hover_background": "#f0f0f0",
+            "icon_color": "#000000",
+            "handle_color": "#ffffff",
+            "heading_size": 48,
+            "subheading_size": 18
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_0a00d21_W8r8cm"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-0f65139f-75ed-4e03-b491-97b25f74c20c",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "product_recommendations_iA6pyd": {
       "type": "product-recommendations",
       "blocks": {
@@ -688,6 +750,7 @@
     "main",
     "marquee_YaAMKe",
     "blocks_CYfctY",
+    "blocks_CieCxC",
     "product_recommendations_iA6pyd",
     "section_UWEzLg"
   ]
