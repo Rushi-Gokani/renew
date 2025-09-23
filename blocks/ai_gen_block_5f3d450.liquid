@@ -5,11 +5,10 @@
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
 {% style %}
-  /* Root */
   .ai-testimonial-carousel-{{ ai_gen_id }} {
     padding: 60px 20px;
     color: {{ block.settings.text_color }};
-    overflow-x: hidden; /* strongly prevent horizontal scroll from this component */
+    overflow: hidden;
     position: relative;
     width: 100%;
     box-sizing: border-box;
@@ -18,7 +17,6 @@
   .ai-testimonial-container-{{ ai_gen_id }} {
     max-width: 1440px;
     margin: 0 auto;
-    box-sizing: border-box;
   }
 
   .ai-testimonial-header-{{ ai_gen_id }} {
@@ -47,30 +45,27 @@
     color: {{ block.settings.text_color }};
   }
 
-  /* WRAPPER: hide overflow and provide internal horizontal padding (not using viewport widths) */
+  /* wrapper: ensure overflow hidden and remove extra padding that created horizontal overflow */
   .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
     position: relative;
     margin-bottom: 40px;
-    overflow-x: hidden; /* enforce hide */
-    overflow-y: visible;
+    overflow: hidden; /* ensure no parent overflow visible */
     width: 100%;
     max-width: 100%;
-    padding-inline-start: 20px; /* inner spacing for visual offset */
-    padding-inline-end: 20px;
     box-sizing: border-box;
+    padding: 0; /* remove wrapper padding that could add width */
   }
 
-  /* TRACK: flex container, no external horizontal padding that causes overflow */
+  /* track: no external padding (we rely on card spacing via gap), allow smooth transforms */
   .ai-testimonial-carousel-track-{{ ai_gen_id }} {
     display: flex;
     gap: 20px;
     transition: transform 0.6s cubic-bezier(.2,.9,.2,1);
-    padding: 0;
+    padding: 0; /* IMPORTANT: remove horizontal padding to avoid extra width */
     margin: 0;
     will-change: transform;
-    touch-action: pan-y; /* allow vertical scrolling */
+    touch-action: pan-y; /* let vertical scroll behave normally */
     -webkit-tap-highlight-color: transparent;
-    box-sizing: border-box;
   }
 
   .ai-testimonial-card-{{ ai_gen_id }} {
@@ -143,16 +138,16 @@
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     color: {{ block.settings.nav_button_text_color }};
-    z-index: 4;
+    z-index: 2;
     transition: all 0.3s ease;
   }
 
   .ai-testimonial-nav-prev-{{ ai_gen_id }} {
-    left: 6px;
+    left: 10px;
   }
 
   .ai-testimonial-nav-next-{{ ai_gen_id }} {
-    right: 6px;
+    right: 10px;
   }
 
   .ai-testimonial-nav-{{ ai_gen_id }}:hover {
@@ -234,33 +229,32 @@
     background: {{ block.settings.star_color }};
   }
 
-  /* MOBILE: use calc(100% - padding) not viewport units, hide nav */
   @media (max-width: 768px) {
     .ai-testimonial-carousel-{{ ai_gen_id }} {
-      padding: 40px 12px;
-    }
-
-    .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
-      padding-inline-start: 12px;
-      padding-inline-end: 12px;
+      padding: 40px 15px;
+      overflow-x: hidden;
+      overflow-y: visible;
     }
 
     .ai-testimonial-carousel-track-{{ ai_gen_id }} {
-      gap: 14px;
+      /* gap reduced for mobile */
+      gap: 15px;
+      margin: 0 10px;
     }
 
+    /* mobile card sizing: use calc so a single card never overflows the wrapper */
     .ai-testimonial-card-{{ ai_gen_id }} {
-      /* IMPORTANT: use percentage relative to wrapper, avoids 100vw overflow */
-      flex: 0 0 calc(100% - 32px); /* wrapper padding compensated */
-      max-width: calc(100% - 32px);
-      min-width: 220px;
-      padding: 18px;
+      flex: 0 0 calc(100% - 40px); /* card fits inside viewport minus intended paddings */
+      max-width: calc(100% - 40px);
+      min-width: 240px;
+      padding: 20px;
       min-height: 140px;
       box-sizing: border-box;
     }
 
+    /* hide outer nav buttons to avoid visual overflow and let swipe handle navigation */
     .ai-testimonial-nav-{{ ai_gen_id }} {
-      display: none; /* rely on swipe + indicators on mobile */
+      display: none;
     }
 
     .ai-testimonial-footer-{{ ai_gen_id }} {
@@ -298,23 +292,21 @@
 
   @media (max-width: 480px) {
     .ai-testimonial-carousel-{{ ai_gen_id }} {
-      padding: 28px 8px;
-    }
-
-    .ai-testimonial-carousel-wrapper-{{ ai_gen_id }} {
-      padding-inline-start: 8px;
-      padding-inline-end: 8px;
+      padding: 30px 10px;
+      overflow-x: hidden;
+      overflow-y: visible;
     }
 
     .ai-testimonial-carousel-track-{{ ai_gen_id }} {
       gap: 12px;
+      margin: 0 5px;
     }
 
     .ai-testimonial-card-{{ ai_gen_id }} {
-      flex: 0 0 calc(100% - 24px);
-      max-width: calc(100% - 24px);
-      min-width: 200px;
-      padding: 14px;
+      flex: 0 0 calc(100vw - 40px);
+      max-width: 300px;
+      min-width: 240px;
+      padding: 16px;
       min-height: 120px;
       box-sizing: border-box;
     }
@@ -456,8 +448,8 @@
     class TestimonialCarousel{{ ai_gen_id }} extends HTMLElement {
       constructor() {
         super();
-        this.currentIndex = 0;
-        this.highlightIndex = 0;
+        this.currentIndex = 0; // left-most visible index (used for paging/translate)
+        this.highlightIndex = 0; // exact card index we want highlighted/centered
         this.autoplayInterval = null;
         this.resizing = false;
         this.touchStartX = 0;
@@ -473,19 +465,15 @@
         this.cards = Array.from(this.querySelectorAll('.ai-testimonial-card-{{ ai_gen_id }}'));
         this.autoplay = this.dataset.autoplay === 'true';
         this.autoplaySpeed = parseInt(this.dataset.autoplaySpeed) || 3000;
-
-        // force wrapper overflow hidden at runtime as a belt-and-suspenders fix
-        if (this.parentElement) {
-          const wrapper = this.parentElement.querySelector('.ai-testimonial-carousel-wrapper-{{ ai_gen_id }}');
-          if (wrapper) wrapper.style.overflowX = 'hidden';
-        }
-
+        
         if (this.track && this.cards.length > 0) {
           this.setupCarousel();
           this.setupNavigation();
           this.setupIndicators();
           this.setupTouchEvents();
+          // small timeout to allow layout/fonts to settle
           setTimeout(() => {
+            // start from the first card highlighted
             this.highlightIndex = 0;
             this.syncCurrentIndexToHighlight();
             this.updateCarousel(true);
@@ -501,19 +489,16 @@
 
       setupCarousel() {
         this.cardsPerView = this.getCardsPerView();
-        this.gap = 20; // must match CSS gap; JS uses numerical px
-        // adjust gap for mobile breakpoints to match CSS
-        if (window.innerWidth <= 768) this.gap = 14;
-        if (window.innerWidth <= 480) this.gap = 12;
-
+        this.gap = 20; // must match CSS gap
         this.maxIndex = Math.max(0, this.cards.length - this.cardsPerView);
+        // keep highlightIndex in range
         this.highlightIndex = Math.max(0, Math.min(this.highlightIndex, this.cards.length - 1));
       }
 
       getCardsPerView() {
         if (window.innerWidth >= 1200) return 4;
         if (window.innerWidth >= 769) return 3;
-        if (window.innerWidth >= 480) return 1; // keep single card view on phones, you can adjust if you want 2
+        if (window.innerWidth >= 480) return 1;
         return 1;
       }
 
@@ -523,13 +508,17 @@
           this.nextBtn.addEventListener('click', () => this.goToNext());
         }
 
+        // debounce resize
         this._resizeHandler = () => {
           if (this.resizing) return;
           this.resizing = true;
           window.requestAnimationFrame(() => {
-            const old = this.cardsPerView;
+            const oldCardsPerView = this.cardsPerView;
             this.setupCarousel();
-            if (old !== this.cardsPerView) this.syncCurrentIndexToHighlight();
+            // If cardsPerView changed, re-sync current index to keep highlight centered
+            if (oldCardsPerView !== this.cardsPerView) {
+              this.syncCurrentIndexToHighlight();
+            }
             this.updateCarousel();
             this.resizing = false;
           });
@@ -539,13 +528,16 @@
 
       setupIndicators() {
         if (!this.indicatorsContainer) return;
+        
         this.indicatorsContainer.innerHTML = '';
+        // number of pages is maxIndex + 1
         const pages = Math.max(1, this.maxIndex + 1);
         for (let i = 0; i < pages; i++) {
           const indicator = document.createElement('div');
           indicator.className = 'ai-testimonial-indicator-{{ ai_gen_id }}';
           indicator.addEventListener('click', () => {
-            const pageLeftIndex = i;
+            // when user clicks a page indicator, move highlight to the page's center card
+            const pageLeftIndex = i; // left-most index for page
             const centerIndex = pageLeftIndex + Math.floor(this.cardsPerView / 2);
             const target = Math.max(0, Math.min(centerIndex, this.cards.length - 1));
             this.goToHighlight(target);
@@ -556,6 +548,7 @@
 
       setupTouchEvents() {
         if (!this.track) return;
+
         this.track.addEventListener('touchstart', (e) => {
           this.touchStartX = e.touches[0].clientX;
           this.isDragging = true;
@@ -564,8 +557,8 @@
 
         this.track.addEventListener('touchmove', (e) => {
           if (!this.isDragging) return;
-          // allow small passive movement; don't preventDefault unless we implement dragging
-        }, { passive: true });
+          e.preventDefault();
+        }, { passive: false });
 
         this.track.addEventListener('touchend', (e) => {
           if (!this.isDragging) return;
@@ -579,12 +572,19 @@
       handleSwipe() {
         const swipeThreshold = 50;
         const diff = this.touchStartX - this.touchEndX;
+
         if (Math.abs(diff) > swipeThreshold) {
-          if (diff > 0) this.goToNext();
-          else this.goToPrev();
+          if (diff > 0) {
+            // Swipe left - next
+            this.goToNext();
+          } else {
+            // Swipe right - previous
+            this.goToPrev();
+          }
         }
       }
 
+      // compute currentIndex (left-most) so that highlightIndex is centered when possible
       syncCurrentIndexToHighlight() {
         const half = Math.floor(this.cardsPerView / 2);
         let desiredLeft = this.highlightIndex - half;
@@ -594,11 +594,13 @@
       }
 
       updateActiveCard() {
+        // highlightIndex is the single highlighted card
         const centerIndex = this.highlightIndex;
         this.cards.forEach((card, index) => {
           card.classList.toggle('active', index === centerIndex);
         });
 
+        // update indicators (indicators reflect pages; choose the page that contains currentIndex)
         const indicators = this.indicatorsContainer ? this.indicatorsContainer.querySelectorAll('.ai-testimonial-indicator-{{ ai_gen_id }}') : [];
         indicators.forEach((indicator, idx) => {
           indicator.classList.toggle('active', idx === this.currentIndex);
@@ -608,49 +610,47 @@
       updateCarousel(initial = false) {
         if (!this.cards || this.cards.length === 0) return;
 
-        // use bounding rect for accurate sub-pixel widths
-        const firstCardRect = this.cards[0].getBoundingClientRect();
-        const cardWidth = Math.max(1, Math.round(firstCardRect.width));
+        // recalc sizes using runtime measurements
+        const cardWidth = this.cards[0].offsetWidth;
         const computedGap = this.gap;
         const cardWidthWithGap = cardWidth + computedGap;
-
         const wrapper = this.track.parentElement;
-        const wrapperRect = wrapper.getBoundingClientRect();
-        const wrapperWidth = Math.max(0, Math.round(wrapperRect.width));
+        const wrapperWidth = wrapper.clientWidth; // use clientWidth to ignore scrollbar thickness
+        const trackWidth = this.track.scrollWidth; // use scrollWidth for actual content width
+        const maxTranslate = Math.max(0, trackWidth - wrapperWidth);
 
-        const trackWidth = Math.max(0, Math.round(this.track.scrollWidth));
-        // small epsilon to avoid rounding overflow
-        const maxTranslate = Math.max(0, trackWidth - wrapperWidth + 1);
-
+        // ensure currentIndex is in range (it should be because syncCurrentIndexToHighlight clamps)
         this.currentIndex = Math.max(0, Math.min(this.currentIndex, this.maxIndex));
 
         if (window.innerWidth <= 768) {
-          // mobile: translate based on highlight, but clamp using safe maxTranslate
+          // mobile: compute translate based on highlight index but clamp to max translate
           let translateX = this.highlightIndex * cardWidthWithGap;
 
-          // ensure we don't translate beyond track's actual width
+          // If the calculated translate would hide the last part of the track, clamp it
           const finalTranslate = Math.min(translateX, maxTranslate);
 
-          // set transform (negated to move left), ensure non-negative
-          const safeTranslate = Math.max(0, Math.round(finalTranslate));
-          this.track.style.transform = `translateX(${-safeTranslate}px)`;
+          // Apply translation with safety check
+          this.track.style.transform = `translateX(${-Math.max(0, finalTranslate)}px)`;
         } else {
-          // desktop: center the highlight card when possible
+          // desktop/tablet: center the highlight card when possible
           const centerOfCard = (this.highlightIndex * cardWidthWithGap) + (cardWidth / 2);
           let desiredTranslate = centerOfCard - (wrapperWidth / 2);
+
+          // clamp between 0 and maxTranslate
           desiredTranslate = Math.max(0, Math.min(desiredTranslate, maxTranslate));
-          const safeTranslate = Math.max(0, Math.round(desiredTranslate));
-          this.track.style.transform = `translateX(${-safeTranslate}px)`;
+          this.track.style.transform = `translateX(${-desiredTranslate}px)`;
         }
 
-        // ensure no accidental parent overflow by forcing wrapper overflowX hidden
-        if (wrapper && wrapper.style) wrapper.style.overflowX = 'hidden';
-
+        // update active class and indicators
         this.updateActiveCard();
 
-        if (initial) this.track.getBoundingClientRect();
+        if (initial) {
+          // force reflow to avoid jump on load
+          this.track.getBoundingClientRect();
+        }
       }
 
+      // move highlight to a specific card index
       goToHighlight(cardIndex) {
         this.stopAutoplay();
         this.highlightIndex = Math.max(0, Math.min(cardIndex, this.cards.length - 1));
@@ -661,6 +661,7 @@
 
       goToNext() {
         this.stopAutoplay();
+        // advance highlight to next card, loop when passing last
         this.highlightIndex = (this.highlightIndex + 1) % this.cards.length;
         this.syncCurrentIndexToHighlight();
         this.updateCarousel();
@@ -669,12 +670,14 @@
 
       goToPrev() {
         this.stopAutoplay();
+        // move highlight to previous card, loop backwards
         this.highlightIndex = (this.highlightIndex - 1 + this.cards.length) % this.cards.length;
         this.syncCurrentIndexToHighlight();
         this.updateCarousel();
         if (this.autoplay) this.startAutoplay();
       }
 
+      // If user clicks a page indicator we route to the center card of that page
       goToSlide(pageIndex) {
         this.stopAutoplay();
         const pageLeftIndex = Math.max(0, Math.min(pageIndex, this.maxIndex));
@@ -689,6 +692,7 @@
         if (!this.autoplay) return;
         this.stopAutoplay();
         this.autoplayInterval = setInterval(() => {
+          // increment highlightIndex by 1 (per-card loop)
           this.highlightIndex = (this.highlightIndex + 1) % this.cards.length;
           this.syncCurrentIndexToHighlight();
           this.updateCarousel();
@@ -706,6 +710,7 @@
     customElements.define('testimonial-carousel-{{ ai_gen_id }}', TestimonialCarousel{{ ai_gen_id }});
   })();
 </script>
+
 
 
 
