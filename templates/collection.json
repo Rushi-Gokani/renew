@@ -108,6 +108,7 @@
           "blocks": {}
         }
       },
+      "disabled": true,
       "settings": {
         "layout_type": "grid",
         "product_card_size": "large",
@@ -169,11 +170,60 @@
         "padding-block-start": 8,
         "padding-block-end": 8
       }
+    },
+    "1758633333882b4fbc": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_24e02dc_9HyGYw": {
+          "type": "ai_gen_block_24e02dc",
+          "settings": {
+            "featured_collection": "frontpage",
+            "products_to_show": 12,
+            "background_color": "#f0f7f4",
+            "accent_color": "#2d5a27",
+            "accent_hover_color": "#1e3d1a",
+            "card_border_radius": 12,
+            "button_border_radius": 8
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_24e02dc_9HyGYw"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-0b66a674-bac7-470a-9144-c8bf28855805",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
     "section",
     "main",
-    "collection_browser_mYEm9y"
+    "collection_browser_mYEm9y",
+    "1758633333882b4fbc"
   ]
 }
