@@ -1,6 +1,476 @@
+{% doc %}
+  @prompt
+    Create a Shopify collection page layout with a soft beige background, filter sidebar on the left including "By Health Goal" and "Product Type" checkboxes with matching icons, a top row of toggle buttons for "Subscribe & Save 20%", "Bundle & Save", "Best Sellers", and "Rheal x Vita Coco Bundles", and a product grid on the right showing product cards with large product image, bold green product title, short description, price with discount and save badge if applicable, and a rounded green "Add to Cart" button. Cards should have rounded corners, white background, light shadow, and hover effect. Match styling exactly as in natural wellness e-commerce brand design.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-collection-layout-{{ ai_gen_id }} {
+    background-color: {{ block.settings.background_color }};
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  .ai-collection-container-{{ ai_gen_id }} {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+  }
+
+  .ai-collection-sidebar-{{ ai_gen_id }} {
+    background: white;
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+  }
+
+  .ai-collection-main-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .ai-collection-filters-title-{{ ai_gen_id }} {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .ai-collection-filter-group-{{ ai_gen_id }} {
+    margin-bottom: 24px;
+  }
+
+  .ai-collection-filter-group-title-{{ ai_gen_id }} {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ai-collection-filter-icon-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    color: {{ block.settings.accent_color }};
+  }
+
+  .ai-collection-filter-option-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+
+  .ai-collection-filter-checkbox-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    accent-color: {{ block.settings.accent_color }};
+  }
+
+  .ai-collection-filter-label-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+  }
+
+  .ai-collection-toggle-buttons-{{ ai_gen_id }} {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .ai-collection-toggle-button-{{ ai_gen_id }} {
+    padding: 12px 20px;
+    background: white;
+    border: 2px solid {{ block.settings.accent_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    color: {{ block.settings.accent_color }};
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .ai-collection-toggle-button-{{ ai_gen_id }}:hover,
+  .ai-collection-toggle-button-{{ ai_gen_id }}.active {
+    background: {{ block.settings.accent_color }};
+    color: white;
+  }
+
+  .ai-collection-products-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .ai-collection-product-card-{{ ai_gen_id }} {
+    background: white;
+    border-radius: {{ block.settings.card_border_radius }}px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+
+  .ai-collection-product-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .ai-collection-product-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 240px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-collection-product-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-collection-product-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-collection-product-image-placeholder-{{ ai_gen_id }} svg {
+    width: 80px;
+    height: 80px;
+    color: #ccc;
+  }
+
+  .ai-collection-product-badge-{{ ai_gen_id }} {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #e74c3c;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .ai-collection-product-info-{{ ai_gen_id }} {
+    padding: 20px;
+  }
+
+  .ai-collection-product-title-{{ ai_gen_id }} {
+    font-size: 18px;
+    font-weight: 700;
+    color: {{ block.settings.accent_color }};
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .ai-collection-product-description-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .ai-collection-product-price-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .ai-collection-product-price-current-{{ ai_gen_id }} {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .ai-collection-product-price-original-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: #999;
+    text-decoration: line-through;
+  }
+
+  .ai-collection-product-save-badge-{{ ai_gen_id }} {
+    background: #e74c3c;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .ai-collection-add-to-cart-{{ ai_gen_id }} {
+    width: 100%;
+    background: {{ block.settings.accent_color }};
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .ai-collection-add-to-cart-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.accent_hover_color }};
+  }
+
+  .ai-collection-empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+  }
+
+  .ai-collection-empty-state-{{ ai_gen_id }} h3 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: #333;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-collection-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .ai-collection-sidebar-{{ ai_gen_id }} {
+      position: static;
+    }
+
+    .ai-collection-toggle-buttons-{{ ai_gen_id }} {
+      justify-content: center;
+    }
+
+    .ai-collection-products-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-collection-layout-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-collection-container-{{ ai_gen_id }}">
+    <aside class="ai-collection-sidebar-{{ ai_gen_id }}">
+      <h3 class="ai-collection-filters-title-{{ ai_gen_id }}">Filters</h3>
+      
+      <div class="ai-collection-filter-group-{{ ai_gen_id }}">
+        <h4 class="ai-collection-filter-group-title-{{ ai_gen_id }}">
+          <svg class="ai-collection-filter-icon-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+          By Health Goal
+        </h4>
+        <label class="ai-collection-filter-option-{{ ai_gen_id }}">
+          <input type="checkbox" class="ai-collection-filter-checkbox-{{ ai_gen_id }}">
+          <span class="ai-collection-filter-label-{{ ai_gen_id }}">Energy & Focus</span>
+        </label>
+        <label class="ai-collection-filter-option-{{ ai_gen_id }}">
+          <input type="checkbox" class="ai-collection-filter-checkbox-{{ ai_gen_id }}">
+          <span class="ai-collection-filter-label-{{ ai_gen_id }}">Immune Support</span>
+        </label>
+        <label class="ai-collection-filter-option-{{ ai_gen_id }}">
+          <input type="checkbox" class="ai-collection-filter-checkbox-{{ ai_gen_id }}">
+          <span class="ai-collection-filter-label-{{ ai_gen_id }}">Sleep & Recovery</span>
+        </label>
+        <label class="ai-collection-filter-option-{{ ai_gen_id }}">
+          <input type="checkbox" class="ai-collection-filter-checkbox-{{ ai_gen_id }}">
+          <span class="ai-collection-filter-label-{{ ai_gen_id }}">Digestive Health</span>
+        </label>
+      </div>
+
+      <div class="ai-collection-filter-group-{{ ai_gen_id }}">
+        <h4 class="ai-collection-filter-group-title-{{ ai_gen_id }}">
+          <svg class="ai-collection-filter-icon-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+          </svg>
+          Product Type
+        </h4>
+        <label class="ai-collection-filter-option-{{ ai_gen_id }}">
+          <input type="checkbox" class="ai-collection-filter-checkbox-{{ ai_gen_id }}">
+          <span class="ai-collection-filter-label-{{ ai_gen_id }}">Vitamins</span>
+        </label>
+        <label class="ai-collection-filter-option-{{ ai_gen_id }}">
+          <input type="checkbox" class="ai-collection-filter-checkbox-{{ ai_gen_id }}">
+          <span class="ai-collection-filter-label-{{ ai_gen_id }}">Supplements</span>
+        </label>
+        <label class="ai-collection-filter-option-{{ ai_gen_id }}">
+          <input type="checkbox" class="ai-collection-filter-checkbox-{{ ai_gen_id }}">
+          <span class="ai-collection-filter-label-{{ ai_gen_id }}">Protein Powders</span>
+        </label>
+        <label class="ai-collection-filter-option-{{ ai_gen_id }}">
+          <input type="checkbox" class="ai-collection-filter-checkbox-{{ ai_gen_id }}">
+          <span class="ai-collection-filter-label-{{ ai_gen_id }}">Bundles</span>
+        </label>
+      </div>
+    </aside>
+
+    <main class="ai-collection-main-{{ ai_gen_id }}">
+      <div class="ai-collection-toggle-buttons-{{ ai_gen_id }}">
+        <a href="#" class="ai-collection-toggle-button-{{ ai_gen_id }}">Subscribe & Save 20%</a>
+        <a href="#" class="ai-collection-toggle-button-{{ ai_gen_id }}">Bundle & Save</a>
+        <a href="#" class="ai-collection-toggle-button-{{ ai_gen_id }}">Best Sellers</a>
+        <a href="#" class="ai-collection-toggle-button-{{ ai_gen_id }}">Rheal x Vita Coco Bundles</a>
+      </div>
+
+      <div class="ai-collection-products-grid-{{ ai_gen_id }}">
+        {% if block.settings.featured_collection != blank and block.settings.featured_collection.products.size > 0 %}
+          {% for product in block.settings.featured_collection.products limit: block.settings.products_to_show %}
+            <div class="ai-collection-product-card-{{ ai_gen_id }}">
+              <div class="ai-collection-product-image-{{ ai_gen_id }}">
+                {% if product.featured_image %}
+                  <img
+                    src="{{ product.featured_image | image_url: width: 400 }}"
+                    alt="{{ product.featured_image.alt | escape }}"
+                    loading="lazy"
+                    width="400"
+                    height="240"
+                  >
+                {% else %}
+                  <div class="ai-collection-product-image-placeholder-{{ ai_gen_id }}">
+                    {{ 'product-1' | placeholder_svg_tag }}
+                  </div>
+                {% endif %}
+                
+                {% if product.compare_at_price > product.price %}
+                  {% assign savings = product.compare_at_price | minus: product.price %}
+                  {% assign savings_percent = savings | times: 100 | divided_by: product.compare_at_price %}
+                  <div class="ai-collection-product-badge-{{ ai_gen_id }}">
+                    Save {{ savings_percent }}%
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="ai-collection-product-info-{{ ai_gen_id }}">
+                <h3 class="ai-collection-product-title-{{ ai_gen_id }}">{{ product.title }}</h3>
+                
+                {% if product.description != blank %}
+                  <p class="ai-collection-product-description-{{ ai_gen_id }}">
+                    {{ product.description | strip_html | truncate: 80 }}
+                  </p>
+                {% endif %}
+
+                <div class="ai-collection-product-price-{{ ai_gen_id }}">
+                  <span class="ai-collection-product-price-current-{{ ai_gen_id }}">
+                    {{ product.price | money }}
+                  </span>
+                  {% if product.compare_at_price > product.price %}
+                    <span class="ai-collection-product-price-original-{{ ai_gen_id }}">
+                      {{ product.compare_at_price | money }}
+                    </span>
+                    {% assign savings = product.compare_at_price | minus: product.price %}
+                    <span class="ai-collection-product-save-badge-{{ ai_gen_id }}">
+                      Save {{ savings | money }}
+                    </span>
+                  {% endif %}
+                </div>
+
+                <button class="ai-collection-add-to-cart-{{ ai_gen_id }}" onclick="window.location.href='{{ product.url }}'">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="ai-collection-empty-state-{{ ai_gen_id }}">
+            <h3>No products found</h3>
+            <p>Select a collection to display products here</p>
+          </div>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+</div>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Collection layout",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collection"
+    },
+    {
+      "type": "collection",
+      "id": "featured_collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "label": "Products to show",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f5f1eb"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#2d5a27"
+    },
+    {
+      "type": "color",
+      "id": "accent_hover_color",
+      "label": "Accent hover color",
+      "default": "#1e3d1a"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection layout"
+    }
+  ]
+}
 {% endschema %}
