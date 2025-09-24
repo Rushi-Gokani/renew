@@ -9,120 +9,9 @@
  */
 {
   "sections": {
-    "hero_m9GdkU": {
-      "type": "hero",
-      "blocks": {
-        "text_jxhVy3": {
-          "type": "text",
-          "settings": {
-            "text": "<h1>Daily wellness that</h1><h1> delivers</h1>",
-            "width": "fit-content",
-            "max_width": "narrow",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground-heading)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "text_MBYeCg": {
-          "type": "text",
-          "settings": {
-            "text": "<h5>Kickstart your routine today</h5>",
-            "width": "100%",
-            "max_width": "none",
-            "alignment": "left",
-            "type_preset": "h5",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground-heading)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 15,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "button_WUbdWM": {
-          "type": "button",
-          "name": "t:names.button",
-          "settings": {
-            "label": "Shop Now",
-            "link": "shopify://collections/all",
-            "open_in_new_tab": false,
-            "style_class": "button",
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "text_jxhVy3",
-        "text_MBYeCg",
-        "button_WUbdWM"
-      ],
-      "disabled": true,
-      "name": "t:names.hero",
-      "settings": {
-        "media_type_1": "image",
-        "image_1": "shopify://shop_images/Gemini_Generated_Image_4evf4t4evf4t4evf.png",
-        "mobile_media_type_1": "same_as_desktop",
-        "mobile_image_position_1": "center center",
-        "mobile_image_fit_1": "cover",
-        "mobile_fullscreen_1": true,
-        "media_type_2": "image",
-        "mobile_media_type_2": "same_as_desktop",
-        "mobile_image_position_2": "center center",
-        "mobile_image_fit_2": "cover",
-        "mobile_fullscreen_2": true,
-        "link": "",
-        "open_in_new_tab": false,
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 16,
-        "section_width": "page-width",
-        "section_height": "large",
-        "section_height_custom": 50,
-        "color_scheme": "scheme-7",
-        "toggle_overlay": false,
-        "overlay_color": "#000000",
-        "overlay_style": "solid",
-        "gradient_direction": "to bottom",
-        "blurred_reflection": true,
-        "reflection_opacity": 36,
-        "padding-block-start": 40,
-        "padding-block-end": 40
-      }
-    },
     "hero_custom_AfF3b3": {
       "type": "hero-custom",
+      "disabled": true,
       "name": "Hero Custom",
       "settings": {
         "desktop_image": "shopify://shop_images/Gemini_Generated_Image_gda717gda717gda7.png",
@@ -1464,7 +1353,6 @@
     }
   },
   "order": [
-    "hero_m9GdkU",
     "hero_custom_AfF3b3",
     "175853292014489fad",
     "17585347197cf0abc3",
