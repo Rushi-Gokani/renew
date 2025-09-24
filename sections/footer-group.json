@@ -97,6 +97,7 @@
                 "text_VJktGR": {
                   "type": "text",
                   "name": "t:names.text",
+                  "disabled": true,
                   "settings": {
                     "text": "<p>Address:- </p><p>Akshya Nagar 1st Block 1st Cross, Rammurthy nagar, Bangalore-560016</p><p>Email:- dummy@gmail.com</p><p>Phone:- 1234567489</p>",
                     "width": "100%",
