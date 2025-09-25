@@ -64,9 +64,8 @@
           </div>
         {% endif %}
 
-        <div class="quantity-selector">
-          <label for="quantity">Quantity:</label>
-          <input type="number" name="quantity" id="quantity" value="1" min="1">
+        <div class="product-quantity">
+          {% render 'quantity-selector', product: product %}
         </div>
 
         <button type="submit" class="add-to-cart-btn" {% unless product.available %}disabled{% endunless %}>
@@ -174,12 +173,8 @@
     font-size: 16px;
   }
 
-  .quantity-selector {
+  .product-quantity {
     margin-bottom: 20px;
-  }
-
-  .quantity-selector input {
-    width: 80px;
   }
 
   .add-to-cart-btn {
