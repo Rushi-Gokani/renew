@@ -83,6 +83,7 @@
 <style>
   .product-simple-section {
     padding: 40px 20px;
+    overflow-x: hidden;
   }
 
   .product-simple-grid {
@@ -96,7 +97,12 @@
   @media (max-width: 768px) {
     .product-simple-grid {
       grid-template-columns: 1fr;
-      gap: 30px;
+      gap: 20px;
+    }
+
+    .product-description {
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
   }
 
