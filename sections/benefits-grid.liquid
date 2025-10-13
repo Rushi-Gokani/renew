@@ -1,0 +1,170 @@
+{% liquid
+  assign columns_desktop = section.settings.columns_desktop
+  assign columns_mobile = section.settings.columns_mobile
+%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} spacing-style benefits-grid"
+  style="{%- render 'spacing-style', settings: section.settings -%}"
+  {% if request.visual_preview_mode %}data-shopify-visual-preview{% endif %}
+>
+  <div class="benefits-grid__header">
+    {% if section.settings.heading != blank %}
+      <h2 class="benefits-grid__title">{{ section.settings.heading }}</h2>
+    {% endif %}
+    {% if section.settings.subheading != blank %}
+      <div class="benefits-grid__subtitle rte">{{ section.settings.subheading }}</div>
+    {% endif %}
+  </div>
+
+  {% capture benefits_items %}
+    {% for block in section.blocks %}
+      {% if block.type == 'benefit' %}
+        <div class="benefits-grid__card" {{ block.shopify_attributes }}>
+          {% if block.settings.icon != blank %}
+            <div class="benefits-grid__icon">
+              <img loading="lazy" src="{{ block.settings.icon | image_url: width: 96 }}" alt="{{ block.settings.icon.alt | escape }}" width="48" height="48">
+            </div>
+          {% endif %}
+          {% if block.settings.title != blank %}
+            <h3 class="benefits-grid__card-title">{{ block.settings.title }}</h3>
+          {% endif %}
+          {% if block.settings.text != blank %}
+            <p class="benefits-grid__card-text">{{ block.settings.text }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endcapture %}
+
+  <div
+    class="benefits-grid__grid"
+    style="
+      --benefits-columns-desktop: {{ columns_desktop }};
+      --benefits-columns-mobile: {{ columns_mobile }};
+      --benefits-gap: {{ section.settings.grid_gap }}px;
+    "
+  >
+    {{ benefits_items }}
+  </div>
+</div>
+
+{% stylesheet %}
+  .benefits-grid {
+    text-align: center;
+  }
+
+  .benefits-grid__header {
+    max-width: 760px;
+    margin-inline: auto;
+    margin-bottom: 24px;
+  }
+
+  .benefits-grid__title {
+    margin: 0 0 8px 0;
+  }
+
+  .benefits-grid__subtitle {
+    color: rgb(var(--color-foreground) / 0.75);
+  }
+
+  .benefits-grid__grid {
+    display: grid;
+    gap: var(--benefits-gap);
+    grid-template-columns: repeat(var(--benefits-columns-mobile), minmax(0, 1fr));
+  }
+
+  @media screen and (min-width: 990px) {
+    .benefits-grid__grid {
+      grid-template-columns: repeat(var(--benefits-columns-desktop), minmax(0, 1fr));
+    }
+  }
+
+  .benefits-grid__card {
+    background: rgb(var(--color-background));
+    border-radius: var(--radius-300, 16px);
+    padding: 24px;
+    text-align: left;
+    box-shadow: 0 1px 0 rgb(var(--color-foreground) / 0.06), 0 2px 8px rgb(var(--color-foreground) / 0.04);
+  }
+
+  .benefits-grid__icon {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(var(--color-accent), 0.08);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .benefits-grid__icon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .benefits-grid__card-title {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .benefits-grid__card-text {
+    margin: 0;
+    color: rgb(var(--color-foreground) / 0.7);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Benefits grid",
+  "tag": "section",
+  "class": "benefits-grid-section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What You'll Gain" },
+    { "type": "richtext", "id": "subheading", "label": "Subheading", "default": "<p>As a Wellness Co. affiliate, you'll enjoy a range of benefits designed to help you grow your audience and maximize your earnings. We're committed to supporting our partners every step of the way.</p>" },
+    { "type": "select", "id": "section_width", "label": "Section width", "options": [ {"value": "page-width", "label": "Page"}, {"value": "full-width", "label": "Full"} ], "default": "page-width" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "grid_gap", "label": "Grid gap", "min": 0, "max": 48, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "columns_desktop", "label": "Columns (desktop)", "min": 1, "max": 6, "step": 1, "default": 3 },
+    { "type": "select", "id": "columns_mobile", "label": "Columns (mobile)", "options": [ {"value": "1", "label": "1"}, {"value": "2", "label": "2"} ], "default": "2" },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 48 }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Icon (48x48 suggested)" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Competitive Commission" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Earn a generous commission on every sale made through your unique affiliate link." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Benefits grid",
+      "category": "Content",
+      "blocks": [
+        { "type": "benefit", "settings": { "title": "Competitive Commission", "text": "Earn a generous commission on every sale made through your unique affiliate link." } },
+        { "type": "benefit", "settings": { "title": "Exclusive Discounts", "text": "Enjoy exclusive discounts on all products for your personal use." } },
+        { "type": "benefit", "settings": { "title": "Early Access", "text": "Get early access to new product launches and special promotions." } },
+        { "type": "benefit", "settings": { "title": "Content Spotlights", "text": "Gain visibility through spotlights on our social media and website." } },
+        { "type": "benefit", "settings": { "title": "Personal Support", "text": "Receive dedicated support from our affiliate team to help you succeed." } },
+        { "type": "benefit", "settings": { "title": "Performance Tracking", "text": "Access a personalized dashboard to track your clicks, sales, and commissions in real-time." } }
+      ],
+      "settings": { "columns_desktop": 3, "columns_mobile": "2", "grid_gap": 16 }
+    }
+  ]
+}
+{% endschema %}
+
+
